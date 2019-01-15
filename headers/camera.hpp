@@ -1,9 +1,7 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-#include "point3d.hpp"
-#include "vector3d.hpp"
-#include "matrix44.hpp"
-#include "types.hpp"
+#include "utils/point3d.hpp"
+#include "utils/vector3d.hpp"
 
 struct camera
 {
