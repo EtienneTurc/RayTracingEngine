@@ -1,15 +1,15 @@
 #ifndef _POINT3D_HPP_
 #define _POINT3D_HPP_
+#include <string>
 
-template <class value_type> // int, float, float 128 ...
 class Point3d
 {
   public:
-	value_type x, y, z;
+	float x, y, z;
 
 	Point3d() : x(0), y(0), z(0) {}
-	Point3d(value_type v) : x(v), y(v), z(v) {}
-	Point3d(value_type xx, value_type yy, value_type zz) : x(xx), y(yy), z(zz) {}
+	Point3d(float v) : x(v), y(v), z(v) {}
+	Point3d(float xx, float yy, float zz) : x(xx), y(yy), z(zz) {}
 	Point3d(const Point3d &pt) : x(pt.x), y(pt.y), z(pt.z) {}
 	~Point3d() {}
 

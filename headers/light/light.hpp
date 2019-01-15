@@ -1,7 +1,7 @@
 #ifndef _LIGHT_HPP_
 #define _LIGHT_HPP_
-#include "vector3d.hpp"
-#include "point3d.hpp"
+#include "utils/vector3d.hpp"
+#include "utils/point3d.hpp"
 #include <cstdint>
 #include <array>
 

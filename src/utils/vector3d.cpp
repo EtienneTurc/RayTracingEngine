@@ -1,21 +1,18 @@
-#include "vector3d.hpp"
+#include "utils/vector3d.hpp"
 #include <math.h>
 
-template <class value_type>
-void Vector3d<value_type>::normalize()
+void Vector3d::normalize()
 {
-	value_type sum = x * x + y * y + z * z;
-	value_type norm = sqrt(sum);
+	float sum = x * x + y * y + z * z;
+	float norm = sqrt(sum);
 
-	value_type inv_nrm = 1 / norm;
+	float inv_nrm = 1 / norm;
 	x *= inv_nrm;
 	y *= inv_nrm;
 	z *= inv_nrm;
-	return *this;
 }
 
-template <class value_type>
-void Vector3d<value_type>::homothetie(const value_type a)
+void Vector3d::homothetie(const float a)
 {
 	x *= a;
 	y *= a;

@@ -1,9 +1,7 @@
 #ifndef _LIGHT_DIR_HPP_
 #define _LIGHT_DIR_HPP_
 #include "light.hpp"
-#include "vector3d.hpp"
 
-template <class value_type>
 class Light_dir : public Light
 {
   public:
