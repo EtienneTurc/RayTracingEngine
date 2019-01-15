@@ -18,8 +18,7 @@ class Scene
 
 	void addLigth(const Light light);
 
-	template <typename object_type>
-	void addObject(const object_type new_object) { _objects.push_back(new_object); };
+	void addObject(const Object new_object);
 
   private:
 	std::vector<Light> _lights;

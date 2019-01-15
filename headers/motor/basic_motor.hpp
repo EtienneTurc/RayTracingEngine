@@ -6,7 +6,7 @@ class BasicMotor : public Motor
 {
   public:
 	void render() {}
-	void trace() {}
+	color_rgb trace() {}
 };
 
 #endif

@@ -3,9 +3,8 @@
 #include "utils/vector3d.hpp"
 #include "utils/point3d.hpp"
 #include <cstdint>
-#include <array>
+#include "type.hpp"
 
-typedef std::array<uint8_t, 3> color_rgb;
 class Light
 {
   public:

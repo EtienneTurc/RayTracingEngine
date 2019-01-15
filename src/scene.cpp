@@ -32,3 +32,8 @@ void Scene::addLigth(const Light new_light)
 {
 	_lights.push_back(new_light);
 }
+
+void Scene::addObject(const Object new_object)
+{
+	_objects.push_back(new_object);
+}

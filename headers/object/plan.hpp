@@ -6,7 +6,7 @@
 class Plan : public Object
 {
   public:
-	Plan(const Vector3d norm, const float origin);
+	Plan(const float op, const color_rgb col, const Vector3d norm, const float origin);
 	~Plan() {}
 
 	float distance(const Point3d pt);

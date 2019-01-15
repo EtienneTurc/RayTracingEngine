@@ -3,18 +3,23 @@
 
 #include "utils/point3d.hpp"
 #include "utils/vector3d.hpp"
+#include "type.hpp"
 
 class Object
 {
   public:
-	Object() {}
+	Object(float op, color_rgb col) : _opacity(op), _color(col) {}
 	~Object() {}
 
-	//   protected:
-	virtual float distance(const Point3d pt) = 0;
-	virtual Vector3d normal_at() = 0;
+  protected:
+	float distance(const Point3d pt);
+	Vector3d normal_at();
 
   private:
+	float _opacity;
+	color_rgb _color;
+
+	//   texture
 };
 
 #endif

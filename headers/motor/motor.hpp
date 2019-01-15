@@ -2,6 +2,7 @@
 #define _MOTOR_HPP
 #include "scene.hpp"
 #include "image.hpp"
+#include "type.hpp"
 
 class Motor
 {
@@ -9,8 +10,9 @@ class Motor
 	Motor(Scene scene, Image img) : scene(scene), img(img) {}
 	~Motor() {}
 
-	virtual void render();
-	virtual void trace();
+  protected:
+	void render();
+	color_rgb trace();
 
   private:
 	Scene scene;

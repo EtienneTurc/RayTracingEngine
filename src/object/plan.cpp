@@ -1,6 +1,6 @@
 #include "object/plan.hpp"
 
-Plan::Plan(const Vector3d norm, const float origin) : _origin(origin)
+Plan::Plan(const float op, const color_rgb col, const Vector3d norm, const float origin) : Object(op, col), _origin(origin)
 {
 	_normal = norm;
 	_normal.normalize();
