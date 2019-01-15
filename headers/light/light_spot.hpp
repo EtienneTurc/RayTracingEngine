@@ -1,44 +1,23 @@
-#ifndef LIGHT_SPOT_HPP
-#define LIGHT_SPOT_HPP
-#include <cmath>
+#ifndef _MANDELBULB_LIGHT_SPOT_HPP_
+#define _MANDELBULB_LIGHT_SPOT_HPP_
 #include "light.hpp"
-#include "types.hpp"
+#include "vector3d.hpp"
+#include "point3d.hpp"
 
-class light_spot : public light
+template <class value_type>
+class Light_spot : public Light
 {
-public:
-    point3d  position;
-    vector3d direction;
-    real_t   angle;
+  public:
+	Light_spot() : Light(), direction(0), position(0), angle(0) {}
+	Light_spot(const Vector3d dir, const Point3d pt, const value_type a) : Light(), direction(dir), position(pt), angle(a)) {}
+	Light_spot(const Vector3d dir, const Point3d pt, const value_type a, const color_rgb col) : Light(col), direction(dir), position(pt), angle(a)) {}
+	Light_spot(const Vector3d dir, const Point3d pt, const value_type a, uint8_t r, uint8_t g, uint8_t b) : Light(r, g, b), direction(dir), position(pt), angle(a)) {}
+	~Light_spot() {}
 
-    light_spot( const point3d& pos, const vector3d& dir, real_t ang, const color_rgb& col ) :
-        light(col), position(pos), direction(dir.normalize()), angle(ang)
-    {}
-    light_spot( const light_spot& ) = default;
-    light_spot( light_spot&& ) = default;
-    ~light_spot() = default;
-
-    /* Pour le shading */
-    virtual color_rgb contribution_at( const point3d& pos, const vector3d& nrm ) const final
-    {
-        auto dir_lght = this->direction_from(pos);
-        // Calcul angle entre direction du spot et le rayon reliant le point au spot :
-        real_t ang = std::acos(dir_lght|this->direction);
-        // On regarde si le spot nous éclaire bien...
-        if ( std::abs(ang) < angle )
-            return std::max(real_t(0),(nrm | dir_lght)) * this->color;
-        else return {0,0,0};
-    }
-    /* Pour l'ombrage */
-    virtual vector3d direction_from( const point3d& pos ) const final
-    {
-        return (pos - this->position).normalize();
-    }
-    virtual std::shared_ptr<light> clone() const
-    {
-        return std::make_shared<light_spot>(*this);
-    }
-
+  private:
+	Point3d position;
+	Vector3d direction;
+	value_type angle;
 };
 
 #endif

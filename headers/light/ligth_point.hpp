@@ -1,37 +1,22 @@
-#ifndef LIGHT_POINT_HPP
-#define LIGHT_POINT_HPP
-#include "types.hpp"
+#ifndef _LIGHT_POINT_HPP_
+#define _LIGHT_POINT_HPP_
 #include "light.hpp"
+#include "point3d.hpp"
 
-class light_point : public light
+template <class value_type>
+class Light_point : public Light
 {
-public:
-    point3d position;
+  public:
+	Light_point() : Light(), pt(0) {}
+	Light_point(const point3d pos) : Light(), pt(pos) {}
+	Light_point(const point3d pos, const color_rgb col) : Light(col), pt(pos) {}
+	Light_point(const point3d pos, uint8_t r, uint8_t g, uint8_t b) : Light(r, g, b), pt(pos) {}
+	~Light_point() {}
 
-    light_point( const point3d& pos, const color_rgb& col ) : 
-        light(col), position(pos)
-    {}
-    light_point( const light_point& ) = default;
-    light_point( light_point&& ) = default;
-    ~light_point() = default;
+	Point3d getPoint() { return pt; }
 
-    /* Pour le shading */
-    virtual color_rgb contribution_at( const point3d& pos, const vector3d& nrm ) const final
-    {
-        auto direction = this->direction_from(pos);
-        return std::max(real_t(0),(nrm | direction)) * this->color;
-    }
-    /* Pour l'ombrage */
-    virtual vector3d direction_from( const point3d& pos ) const final
-    {
-        return (pos - position).normalize();
-    }
-
-    virtual std::shared_ptr<light> clone() const
-    {
-        return std::make_shared<light_point>(*this);
-    }
-
+  private:
+	Point3d pt;
 };
 
 #endif

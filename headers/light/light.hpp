@@ -1,28 +1,33 @@
-#ifndef LIGHT_HPP
-#define LIGHT_HPP
-#include <memory>
+#ifndef _LIGHT_HPP_
+#define _LIGHT_HPP_
 #include "vector3d.hpp"
 #include "point3d.hpp"
+#include <cstdint>
+#include <array>
 
-using color_rgb = vector3d;
-
-class light
+typedef std::array<uint8_t, 3> color_rgb;
+class Light
 {
-public:
-    color_rgb color;
+  public:
+	Light()
+	{
+		color[0] = 0;
+		color[1] = 0;
+		color[2] = 0;
+	}
+	Light(uint8_t r, uint8_t g, uint8_t b)
+	{
+		color[0] = r;
+		color[1] = g;
+		color[2] = b;
+	}
+	Light(color_rgb col) : color(col) {}
+	~Light() {}
 
-    light( const color_rgb& rgb ) : color(rgb)
-    {}
-    light( const light& ) = default;
-    light( light&& ) = default;
-    virtual ~light() = default;
+	color_rgb getCol() { return color; }
 
-    /* Pour le shading */
-    virtual color_rgb contribution_at( const point3d& pos, const vector3d& nrm ) const = 0;
-    /* Pour l'ombrage */
-    virtual vector3d direction_from( const point3d& pos ) const = 0;
-    /* Clonage d'une lumière */
-    virtual std::shared_ptr<light> clone() const = 0;
+  private:
+	color_rgb color;
 };
 
 #endif
