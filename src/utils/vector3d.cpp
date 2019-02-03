@@ -18,3 +18,9 @@ void Vector3d::homothetie(const float a)
 	y *= a;
 	z *= a;
 }
+
+Vector3d prodVect(Vector3d u, Vector3d v) {
+	Vector3d res(u.y*v.z - u.z*v.y, u.z*v.x - u.x*v.z, u.x*v.y - u.y*v.x);
+	res.normalize();
+	return res;
+}

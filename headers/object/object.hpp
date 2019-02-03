@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <iostream>
+#include <sstream>
 
 #include "utils/point3d.hpp"
 #include "utils/vector3d.hpp"

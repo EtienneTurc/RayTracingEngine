@@ -9,7 +9,7 @@
 #include "type.hpp"
 
 void testGenericObjectParser() {
-	GenericObject obj ("cube.obj", Vector3d(0,0,0), 1, {255, 255, 0});
+	GenericObject obj ("cube.obj", 1, {255, 255, 0}, Vector3d(0,0,0));
 }
 
 void testInit() {

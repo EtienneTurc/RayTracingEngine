@@ -11,10 +11,12 @@ class Vector3d
 	Vector3d(float v) : x(v), y(v), z(v) {}
 	Vector3d(float xx, float yy, float zz) : x(xx), y(yy), z(zz) {}
 	Vector3d(const Vector3d &dir) : x(dir.x), y(dir.y), z(dir.z) {}
+	Vector3d(const Point3d pt): x(pt.x), y(pt.y), z(pt.z){}
 	~Vector3d() {}
 
 	void normalize();
 	void homothetie(const float a);
+
 };
 
 template <class charT, class traits = std::char_traits<charT>>
@@ -23,5 +25,7 @@ std::basic_ostream<charT, traits> &operator<<(std::basic_ostream<charT, traits> 
 	stream << "{ " << pt.x << ", " << pt.y << ", " << pt.z << "}";
 	return stream;
 }
+
+Vector3d prodVect(Vector3d, Vector3d);
 
 #endif

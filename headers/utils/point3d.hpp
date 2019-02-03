@@ -23,6 +23,11 @@ class Point3d
 		return {this->x - u.x, this->y - u.y, this->z - u.z};
 	}
 
+	Point3d operator*(const float a) const
+	{
+		return {a*x, a*y,a*z};
+	}
+
 	Point3d &operator+=(const Point3d &u)
 	{
 		this->x += u.x;
