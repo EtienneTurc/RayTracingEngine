@@ -1,6 +1,10 @@
 #ifndef _Object_HPP_
 #define _Object_HPP_
 
+#include <vector>
+#include <array>
+#include <iostream>
+
 #include "utils/point3d.hpp"
 #include "utils/vector3d.hpp"
 #include "type.hpp"
