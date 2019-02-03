@@ -1,7 +1,9 @@
 #ifndef _POINT3D_HPP_
 #define _POINT3D_HPP_
 #include <string>
-#include "vector3d.hpp"
+#include "utils/vector3d.hpp"
+
+// class Vector3d;
 
 class Point3d
 {

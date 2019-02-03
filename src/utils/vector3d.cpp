@@ -1,6 +1,8 @@
 #include "utils/vector3d.hpp"
 #include <math.h>
 
+Vector3d::Vector3d(Point3d &pt) : x(pt.x), y(pt.y), z(pt.z) {}
+
 void Vector3d::normalize()
 {
 	float sum = x * x + y * y + z * z;
