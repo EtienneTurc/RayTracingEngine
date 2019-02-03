@@ -1,6 +1,5 @@
 #ifndef _PLAN_HPP_
 #define _PLAN_HPP_
-
 #include "object/object.hpp"
 
 class Plan : public Object
@@ -10,6 +9,7 @@ class Plan : public Object
 	~Plan() {}
 
 	float distance(const Point3d pt);
+	float distance(const Point3d pt, const Vector3d vec);
 	Vector3d normal_at();
 
   private:

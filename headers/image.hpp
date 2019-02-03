@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include "type.hpp"
 
 class Image
 {
@@ -13,6 +14,12 @@ class Image
 
 	void display();
 	void save(std::string output_name);
+	void setPixel(const color_rgb col, const int index);
+
+	std::vector<unsigned char> getData();
+	unsigned int getHeight();
+	unsigned int getWidth();
+	unsigned int getBytesPerPixel();
 
   private:
 	unsigned int height, width, bytes_per_pixel;

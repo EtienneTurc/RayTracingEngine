@@ -16,9 +16,12 @@ class Object
 	Object(float op, color_rgb col) : _opacity(op), _color(col) {}
 	~Object() {}
 
-  protected:
-	float distance(const Point3d pt);
+	//   protected:
+	float distance(const Point3d pt) {}
+	float distance(const Point3d pt, const Vector3d vec) {}
 	Vector3d normal_at();
+
+	color_rgb getColor();
 
   private:
 	float _opacity;
