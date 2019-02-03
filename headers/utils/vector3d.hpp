@@ -1,6 +1,5 @@
 #ifndef _VECTOR3D_HPP_
 #define _VECTOR3D_HPP_
-#include "point3d.hpp"
 
 class Vector3d
 {
@@ -15,13 +14,21 @@ class Vector3d
 
 	void normalize();
 	void homothetie(const float a);
+
+	Vector3d operator*(float scal)
+	{
+		this->x *= scal;
+		this->y *= scal;
+		this->z *= scal;
+		return *this;
+	}
 };
 
-template <class charT, class traits = std::char_traits<charT>>
-std::basic_ostream<charT, traits> &operator<<(std::basic_ostream<charT, traits> &stream, const Vector3d &pt)
-{
-	stream << "{ " << pt.x << ", " << pt.y << ", " << pt.z << "}";
-	return stream;
-}
+// template <class charT, class traits = std::char_traits<charT>>
+// std::basic_ostream<charT, traits> &operator<<(std::basic_ostream<charT, traits> &stream, const Vector3d &pt)
+// {
+// 	stream << "{ " << pt.x << ", " << pt.y << ", " << pt.z << "}";
+// 	return stream;
+// }
 
 #endif

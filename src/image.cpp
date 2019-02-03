@@ -12,3 +12,30 @@ void Image::save(std::string output_name)
 
 	ofs.close();
 }
+
+void Image::setPixel(const color_rgb col, const int index)
+{
+	pixel_data[3 * index] = col[0];
+	pixel_data[3 * index + 1] = col[1];
+	pixel_data[3 * index + 2] = col[2];
+}
+
+std::vector<unsigned char> Image::getData()
+{
+	return pixel_data;
+}
+
+unsigned int Image::getHeight()
+{
+	return height;
+}
+
+unsigned int Image::getWidth()
+{
+	return width;
+}
+
+unsigned int Image::getBytesPerPixel()
+{
+	return bytes_per_pixel;
+}

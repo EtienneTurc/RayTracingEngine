@@ -37,3 +37,13 @@ void Scene::addObject(const Object new_object)
 {
 	_objects.push_back(new_object);
 }
+
+std::vector<Light> Scene::getLights()
+{
+	return _lights;
+}
+
+std::vector<Object> Scene::getObjects()
+{
+	return _objects;
+}

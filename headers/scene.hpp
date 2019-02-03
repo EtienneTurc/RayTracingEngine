@@ -20,6 +20,9 @@ class Scene
 
 	void addObject(const Object new_object);
 
+	std::vector<Light> getLights();
+	std::vector<Object> getObjects();
+
   private:
 	std::vector<Light> _lights;
 	std::vector<Object> _objects;

@@ -5,14 +5,17 @@
 #include "scene.hpp"
 #include "light/light_point.hpp"
 #include "object/plan.hpp"
-#include "object/generic_object.hpp"
+// #include "object/generic_object.hpp"
 #include "type.hpp"
+#include "engine/basic_engine.hpp"
 
-void testGenericObjectParser() {
-	GenericObject obj ("cube.obj", Vector3d(0,0,0), 1, {255, 255, 0});
-}
+// void testGenericObjectParser()
+// {
+// 	GenericObject obj("cube.obj", Vector3d(0, 0, 0), 1, {255, 255, 0});
+// }
 
-void testInit() {
+void testInit()
+{
 	//Description of the scene
 	Camera cam;
 	Scene scene(cam);
@@ -26,15 +29,14 @@ void testInit() {
 	Image img(100, 100, 3);
 
 	//Render
-
-	//Save
-	img.save("test_save.ppm");
+	BasicEngine engine(scene, img);
+	engine.render();
 }
 
 int main(int argc, char const *argv[])
 {
 	std::cout << "Ray tracer starting\n";
 
-	testGenericObjectParser();
+	testInit();
 	return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef _POINT3D_HPP_
 #define _POINT3D_HPP_
 #include <string>
+#include "utils/vector3d.hpp"
 
 class Point3d
 {
@@ -16,6 +17,14 @@ class Point3d
 	Point3d operator+(const Point3d &pt) const
 	{
 		return {x + pt.x, y + pt.y, z + pt.z};
+	}
+
+	Point3d &operator+=(const Vector3d &vec)
+	{
+		this->x += vec.x;
+		this->y += vec.y;
+		this->z += vec.z;
+		return *this;
 	}
 
 	Point3d operator-(const Point3d &u) const
