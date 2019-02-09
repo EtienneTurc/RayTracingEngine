@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "utils/vector.hpp"
-#include "utils/types.hpp"
+#include "utils/color.hpp"
 
 class Screen
 {
@@ -25,7 +25,7 @@ class Screen
 
 	color_rgb operator()(int row, int col) const
 	{
-		return _data[_width * row + col];
+		return _data[_height * col + row];
 	};
 	Vector pixelDirection(const unsigned row, const unsigned col, const Vector center) const;
 	void setPixelColor(int row, int col, color_rgb color);

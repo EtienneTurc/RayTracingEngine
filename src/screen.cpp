@@ -11,7 +11,7 @@ Screen::Screen(const unsigned h, const unsigned w, const float s, const Vector t
 
 void Screen::setPixelColor(int row, int col, color_rgb color)
 {
-	_data[_width * row + col] = color;
+	_data[_height * col + row] = color;
 }
 
 unsigned Screen::getHeight() const

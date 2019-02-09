@@ -2,7 +2,7 @@
 #define LIGHT_HPP
 
 #include "utils/vector.hpp"
-#include "utils/types.hpp"
+#include "utils/color.hpp"
 
 class Light
 {
@@ -17,7 +17,5 @@ class Light
 	color_rgb getColor() const;
 	Vector getPosition() const;
 };
-
-color_rgb subbSynthese(color_rgb obj, color_rgb li);
 
 #endif //LIGHT_HPP

@@ -9,6 +9,17 @@ Vector Triangle::getNormal() const
 	return edge1.crossProduct(edge2);
 }
 
+Vector Triangle::getNormalFromDirection(const Vector direction) const
+{
+	Vector obj_normal = this->getNormal().normalize();
+	bool is_good_normal = obj_normal.dotProduct(direction) < 0;
+	if (!is_good_normal)
+	{
+		obj_normal = -1 * obj_normal;
+	}
+	return obj_normal;
+}
+
 color_rgb Triangle::getColor() const
 {
 	return _color;
@@ -33,12 +44,7 @@ bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector
 	float u = deviation * (distance.dotProduct(orthogonal));
 
 	if (u < 0.0 || u > 1.0)
-	{
-		// std::cout << "u :" << u << "\n";
-		// std::cout << "distance :" << distance << "\n";
-		// std::cout << "deviation :" << deviation << "\n";
 		return false;
-	}
 
 	Vector q = distance.crossProduct(edge1);
 	float v = deviation * direction.dotProduct(q);
@@ -47,8 +53,6 @@ bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector
 
 	// At this stage we can compute t to find out where the intersection point is on the line.
 	float t = deviation * edge2.dotProduct(q);
-	// intersection = point + direction * t;
-	// return true;
 	if (t > EPSILON) // ray intersection
 	{
 		intersection = point + direction * t;

@@ -12,7 +12,7 @@ DEPS = $(patsubst %.o,$(DEPDIR)/%.d,$(OTMP))
 # Variables
 CC = g++
 CPPFLAGS = -Wall -Wextra -O3 -Iheaders -std=c++11
-LIBS = -pthread
+LIBS = -pthread -fopenmp
 
 all: init $(OBJS)
 	@echo Building the executable...

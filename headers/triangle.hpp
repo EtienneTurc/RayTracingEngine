@@ -2,7 +2,7 @@
 #define TRIANGLE_HPP
 
 #include "utils/vector.hpp"
-#include "utils/types.hpp"
+#include "utils/color.hpp"
 
 class Triangle
 {
@@ -20,6 +20,7 @@ class Triangle
 	color_rgb getColor() const;
 
 	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection);
+	Vector getNormalFromDirection(const Vector direction) const;
 };
 
 #endif //TRIANGLE_HPP

@@ -1,33 +1,53 @@
 #include "scene.hpp"
+#include <chrono>
 
 int main(int argc, char const *argv[])
 {
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+
 	Vector nul(0, 0, 0);
 	Vector front(1, 0, 0);
 	Camera cam(nul, front, 1);
 
 	Vector top_dir(0, 0, 1);
-	Screen screen(200, 200, 0.02, top_dir);
+	Screen screen(2000, 2000, 0.002, top_dir);
 
 	std::vector<Triangle> obj;
-	Vector A(3, 4, 4);
-	Vector B(3, -4, 4);
-	Vector C(3, 0, -4);
-	Triangle T(A, B, C, {255, 0, 0});
-	Vector E(2, 2, 2);
-	Vector F(2, -2, 2);
-	Vector G(2, 0, -2);
-	Triangle Ta(E, F, G, {0, 0, 255});
-	obj.push_back(T);
-	obj.push_back(Ta);
+	Vector A1(3, 4, 4);
+	Vector B1(3, -4, 4);
+	Vector C1(3, 0, -4);
+	Triangle T1(A1, B1, C1, {255, 0, 0});
+	// Vector A2(2, 2, 2);
+	// Vector B2(2, -2, 2);
+	// Vector C2(2, 0, -2);
+	// Triangle T2(A2, B2, C2, {0, 0, 100});
+	Vector A3(10000, 10000, -5);
+	Vector B3(10000, -10000, -5);
+	Vector C3(-10000, 0, -5);
+	Triangle T3(A3, B3, C3, {50, 50, 50});
+	obj.push_back(T1);
+	obj.push_back(T3);
+	// obj.push_back(T2);
 
-	color_rgb col = {255, 255, 255};
-	Vector lu(0, 3, 3);
-	Light l(lu, col);
+	std::vector<Light> lights;
+	color_rgb col = {100, 100, 100};
+	Vector l1(0, 2, 2);
+	Light L1(l1, col);
+	Vector l2(0, 2, -2);
+	col = {100, 100, 100};
+	Light L2(l2, col);
+	lights.push_back(L1);
+	lights.push_back(L2);
 
-	Scene scene(cam, screen, l, obj);
+	Scene scene(cam, screen, lights, obj);
 
 	scene.render();
+
+	end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "Temps calcul ensemble mandelbrot : " << elapsed_seconds.count()
+			  << std::endl;
 
 	return 0;
 }

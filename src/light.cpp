@@ -11,8 +11,3 @@ Vector Light::getPosition() const
 {
 	return _position;
 }
-
-color_rgb subbSynthese(color_rgb obj, color_rgb li)
-{
-	return {obj[0] * li[0] / 255, obj[1] * li[1] / 255, obj[2] * li[2] / 255};
-}
