@@ -36,8 +36,21 @@ void Scene::render()
 			}
 			if (index > -1)
 			{
-				// std::cout << "set color\n";
-				_screen.setPixelColor(row, col, subbSynthese(_objects[index].getColor(), _light.getColor()));
+				Vector intersection_pt(0, 0, 0);
+				direction = _light.getPosition() - intersection;
+				bool hidden = false;
+				for (int i = 0; i < size; i++)
+				{
+					if (_objects[i].isIntersecting(intersection, direction, intersection_pt))
+					{
+						hidden = true;
+						break;
+					}
+				}
+				if (!hidden)
+				{
+					_screen.setPixelColor(row, col, subbSynthese(_objects[index].getColor(), _light.getColor()));
+				}
 			}
 		}
 	}
