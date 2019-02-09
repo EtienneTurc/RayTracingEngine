@@ -25,7 +25,7 @@ void Scene::render()
 			{
 				if (_objects[i].isIntersecting(camera_position, direction, intersection))
 				{
-					std::cout << "hi\n";
+					// std::cout << "hi\n";
 					float distance = (intersection - camera_position).getNorm();
 					if (index == -1 || min_distance > distance)
 					{
@@ -36,8 +36,8 @@ void Scene::render()
 			}
 			if (index > -1)
 			{
-				std::cout << "set color\n";
-				_screen.setPixelColor(row, col, _light.getColor());
+				// std::cout << "set color\n";
+				_screen.setPixelColor(row, col, subbSynthese(_objects[index].getColor(), _light.getColor()));
 			}
 		}
 	}

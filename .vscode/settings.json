@@ -45,5 +45,7 @@
 		"thread": "cpp",
 		"cinttypes": "cpp",
 		"typeindex": "cpp"
-	}
+	},
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false
 }

@@ -13,10 +13,10 @@ int main(int argc, char const *argv[])
 	Vector A(2, 4, 4);
 	Vector B(2, -4, 4);
 	Vector C(2, 0, -4);
-	Triangle T(A, B, C);
+	Triangle T(A, B, C, {255, 0, 0});
 	obj.push_back(T);
 
-	color_rgb col = {0, 100, 200};
+	color_rgb col = {255, 255, 255};
 	Light l(nul, col);
 
 	Scene scene(cam, screen, l, obj);

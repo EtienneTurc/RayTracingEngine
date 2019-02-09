@@ -18,4 +18,6 @@ class Light
 	Vector getPosition() const;
 };
 
+color_rgb subbSynthese(color_rgb obj, color_rgb li);
+
 #endif //LIGHT_HPP
