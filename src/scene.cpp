@@ -2,18 +2,17 @@
 
 Scene::Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Triangle> t) : _camera(c), _screen(s), _lights(l), _objects(t) {}
 
-void Scene::getObjectsIntersection(const Vector direction, int &index, Vector &intersection)
+void Scene::getObjectsIntersection(const Vector direction, const Vector point, int &index, Vector &intersection)
 {
 	index = -1;
 	Vector tmp_intersection(0, 0, 0);
 	int min_distance;
-	Vector camera_position = _camera.getPosition();
 
 	for (int i = 0; i < _objects.size(); i++)
 	{
-		if (_objects[i].isIntersecting(camera_position, direction, tmp_intersection))
+		if (_objects[i].isIntersecting(point, direction, tmp_intersection))
 		{
-			float distance = (tmp_intersection - camera_position).getNorm();
+			float distance = (tmp_intersection - point).getNorm();
 			if (index == -1 || min_distance > distance)
 			{
 				intersection = tmp_intersection;
@@ -24,7 +23,7 @@ void Scene::getObjectsIntersection(const Vector direction, int &index, Vector &i
 	}
 }
 
-void Scene::getContributingLights(const Vector intersection, const int index, std::vector<unsigned> &lights_seen)
+void Scene::getContributingLights(const Vector direction, const Vector intersection, const int index, std::vector<unsigned> &lights_seen, color_rgb &source, const int traced)
 {
 	Vector intersection_pt(0, 0, 0);
 	Vector direction_to_light;
@@ -36,8 +35,10 @@ void Scene::getContributingLights(const Vector intersection, const int index, st
 		hidden = false;
 		direction_to_light = _lights[l].getPosition() - intersection - camera_position;
 
-		for (int i = 0; i < _objects.size() && i != index; i++)
+		for (int i = 0; i < _objects.size(); i++)
 		{
+			if (index == i)
+				continue;
 			if (_objects[i].isIntersecting(intersection, direction_to_light, intersection_pt))
 			{
 				if ((intersection - intersection_pt).getNorm() < (intersection - _lights[l].getPosition() + camera_position).getNorm())
@@ -51,19 +52,56 @@ void Scene::getContributingLights(const Vector intersection, const int index, st
 		if (!hidden)
 			lights_seen.push_back(l);
 	}
+	if (traced < 100 && lights_seen.size() == 0)
+	{
+		if (traced > 2)
+		{
+			std::cout << traced << "\n";
+		}
+		Vector v = _objects[index].getNormalFromDirection(direction);
+		Vector u = -1 * direction;
+		Vector p = u.dotProduct(v) * v;
+		Vector new_direction = 2 * p - u;
+		trace(-1 * intersection, new_direction, traced + 1, source);
+	}
 }
 
-color_rgb Scene::computePixelColor(const std::vector<unsigned> lights_seen, const Vector obj_normal, const Vector intersection)
+color_rgb Scene::computePixelColor(const std::vector<unsigned> lights_seen, const Vector obj_normal, const Vector intersection, const color_rgb source)
 {
-	color_rgb source = {0, 0, 0};
+	color_rgb local_source = source;
 	for (unsigned l = 0; l < lights_seen.size(); l++)
 	{
 		unsigned light_index = lights_seen[l];
 		Vector direction_to_light = _lights[light_index].getPosition() - intersection - _camera.getPosition();
 		float intensity = obj_normal.dotProduct(direction_to_light.normalize());
-		source = addSynthese(source, intensity * _lights[light_index].getColor());
+		local_source = addSynthese(local_source, intensity * _lights[light_index].getColor());
 	}
-	return source;
+	return local_source;
+}
+
+void Scene::trace(Vector point, Vector direction, int traced, color_rgb &source)
+{
+	int index;
+	Vector intersection(0, 0, 0);
+
+	// find if there is an intersection
+	getObjectsIntersection(direction, point, index, intersection);
+
+	//Check light that contributes to the intersection point
+	if (index > -1) // if intersect
+	{
+		std::vector<unsigned> lights_seen;
+
+		getContributingLights(direction, intersection, index, lights_seen, source, traced);
+
+		//set up the normal correctly
+		Vector obj_normal = _objects[index].getNormalFromDirection(direction);
+
+		// set the pixel color
+		color_rgb local_source = {0, 0, 0};
+		local_source = computePixelColor(lights_seen, obj_normal, intersection, source);
+		source = subbSynthese(_objects[index].getColor(), local_source);
+	}
 }
 
 void Scene::render()
@@ -80,29 +118,14 @@ void Scene::render()
 	{
 		for (unsigned row = 0; row < height; row++)
 		{
-			Vector direction = _screen.pixelDirection(row, col, screen_center);
-
 			// initialisation
-			int index;
-			Vector intersection(0, 0, 0);
+			color_rgb source = {0, 0, 0};
+			Vector direction = _screen.pixelDirection(row, col, screen_center);
+			Vector camera_position = _camera.getPosition();
 
-			// find if there is an intersectio
-			getObjectsIntersection(direction, index, intersection);
+			trace(camera_position, direction, 1, source);
 
-			//Check light that contributes to the intersection point
-			if (index > -1) // if intersect
-			{
-				std::vector<unsigned> lights_seen;
-
-				getContributingLights(intersection, index, lights_seen);
-
-				//set up the normal correctly
-				Vector obj_normal = _objects[index].getNormalFromDirection(direction);
-
-				// set the pixel color
-				color_rgb source = computePixelColor(lights_seen, obj_normal, intersection);
-				_screen.setPixelColor(row, col, subbSynthese(_objects[index].getColor(), source));
-			}
+			_screen.setPixelColor(row, col, source);
 		}
 	}
 	_screen.save("first_image.ppm");

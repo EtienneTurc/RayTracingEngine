@@ -25,7 +25,7 @@ color_rgb Triangle::getColor() const
 	return _color;
 }
 
-bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector &intersection)
+bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector &intersection) const
 {
 	//TODO place it better
 	const float EPSILON = 0.0000001;

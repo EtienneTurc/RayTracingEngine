@@ -16,9 +16,10 @@ class Scene
 	std::vector<Triangle> _objects;
 	std::vector<Light> _lights;
 
-	void getObjectsIntersection(const Vector direction, int &index, Vector &intersection);
-	void getContributingLights(const Vector intersection, const int index, std::vector<unsigned> &lights_seen);
-	color_rgb computePixelColor(const std::vector<unsigned> lights_seen, const Vector obj_normal, const Vector intersection);
+	void getObjectsIntersection(const Vector direction, const Vector point, int &index, Vector &intersection);
+	void getContributingLights(const Vector direction, const Vector intersection, const int index, std::vector<unsigned> &lights_seen, color_rgb &source, const int traced);
+	color_rgb computePixelColor(const std::vector<unsigned> lights_seen, const Vector obj_normal, const Vector intersection, const color_rgb source);
+	void trace(Vector intersection, Vector direction, int traced, color_rgb &source);
 
   public:
 	Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Triangle> t);

@@ -18,27 +18,27 @@ int main(int argc, char const *argv[])
 	Vector B1(3, -4, 4);
 	Vector C1(3, 0, -4);
 	Triangle T1(A1, B1, C1, {255, 0, 0});
-	// Vector A2(2, 2, 2);
-	// Vector B2(2, -2, 2);
-	// Vector C2(2, 0, -2);
-	// Triangle T2(A2, B2, C2, {0, 0, 100});
+	Vector A2(2, 1, 2);
+	Vector B2(2, -1, 2);
+	Vector C2(2, 0, -2);
+	Triangle T2(A2, B2, C2, {0, 0, 100});
 	Vector A3(10000, 10000, -5);
 	Vector B3(10000, -10000, -5);
 	Vector C3(-10000, 0, -5);
 	Triangle T3(A3, B3, C3, {50, 50, 50});
-	obj.push_back(T1);
 	obj.push_back(T3);
-	// obj.push_back(T2);
+	obj.push_back(T1);
+	obj.push_back(T2);
 
 	std::vector<Light> lights;
-	color_rgb col = {100, 100, 100};
-	Vector l1(0, 2, 2);
+	color_rgb col = {255, 255, 255};
+	Vector l1(0, 2, 0);
 	Light L1(l1, col);
-	Vector l2(0, 2, -2);
-	col = {100, 100, 100};
+	Vector l2(1, 5, 2);
+	col = {250, 250, 250};
 	Light L2(l2, col);
-	lights.push_back(L1);
 	lights.push_back(L2);
+	lights.push_back(L1);
 
 	Scene scene(cam, screen, lights, obj);
 

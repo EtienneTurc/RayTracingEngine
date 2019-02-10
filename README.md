@@ -7,3 +7,5 @@
  - factoring code
  - other kinds of lights
  - library of objects + object loader
+ - user interface
+ - try hard: du temps réel en openGL

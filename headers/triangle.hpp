@@ -19,7 +19,7 @@ class Triangle
 	Vector getNormal() const;
 	color_rgb getColor() const;
 
-	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection);
+	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection) const;
 	Vector getNormalFromDirection(const Vector direction) const;
 };
 
