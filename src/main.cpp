@@ -14,21 +14,21 @@ int main(int argc, char const *argv[])
 	Screen screen(2000, 2000, 0.002, top_dir);
 
 	std::vector<Triangle> obj;
-	Vector A1(3, 4, 4);
-	Vector B1(3, -4, 4);
-	Vector C1(3, 0, -4);
-	Triangle T1(A1, B1, C1, {255, 0, 0});
-	Vector A2(2, 1, 2);
-	Vector B2(2, -1, 2);
-	Vector C2(2, 0, -2);
-	Triangle T2(A2, B2, C2, {0, 0, 100});
+	// Vector A1(3, 4, 4);
+	// Vector B1(3, -4, 4);
+	// Vector C1(3, 0, -4);
+	// Triangle T1(A1, B1, C1, {255, 0, 0});
+	// Vector A2(2, 1, 2);
+	// Vector B2(2, -1, 2);
+	// Vector C2(2, 0, -2);
+	// Triangle T2(A2, B2, C2, {0, 0, 100});
 	Vector A3(10000, 10000, -5);
 	Vector B3(10000, -10000, -5);
 	Vector C3(-10000, 0, -5);
 	Triangle T3(A3, B3, C3, {50, 50, 50});
 	obj.push_back(T3);
-	obj.push_back(T1);
-	obj.push_back(T2);
+	// obj.push_back(T1);
+	// obj.push_back(T2);
 
 	std::vector<Light> lights;
 	color_rgb col = {255, 255, 255};
@@ -41,6 +41,8 @@ int main(int argc, char const *argv[])
 	lights.push_back(L1);
 
 	Scene scene(cam, screen, lights, obj);
+	Vector tr(3, 0, 0);
+	scene.loaderObj("./objects/cube.obj", {255, 0, 0}, tr);
 
 	scene.render();
 

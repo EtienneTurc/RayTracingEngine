@@ -2,6 +2,9 @@
 #define SCENE_HPP
 
 #include <vector>
+#include <fstream>
+// #include <stdlib.h>
+#include <sstream>
 
 #include "camera.hpp"
 #include "screen.hpp"
@@ -26,6 +29,7 @@ class Scene
 	~Scene() {}
 
 	void render();
+	void loaderObj(const std::string filename, const color_rgb col, const Vector translation);
 };
 
 #endif //SCENE_HPP
