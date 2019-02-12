@@ -29,7 +29,7 @@ class Scene
 	~Scene() {}
 
 	void render();
-	void loaderObj(const std::string filename, const color_rgb col, const Vector translation);
+	void loaderObj(const std::string filename, const color_rgb col, const Vector translation, const Vector rotation);
 };
 
 #endif //SCENE_HPP

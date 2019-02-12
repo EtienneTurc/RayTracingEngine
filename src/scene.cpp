@@ -131,7 +131,7 @@ void Scene::render()
 	_screen.save("first_image.ppm");
 }
 
-void Scene::loaderObj(const std::string filename, const color_rgb col, const Vector translation)
+void Scene::loaderObj(const std::string filename, const color_rgb col, const Vector translation, const Vector rotation)
 {
 	std::ifstream file(filename);
 	if (file.is_open())
@@ -148,27 +148,19 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				v >> x;
 				v >> y;
 				v >> z;
-				summits.push_back(Vector(x, y, z) + translation);
-				std::cout << summits.back() << " summit\n";
+				summits.push_back(Vector(x, y, z).rotate3D(rotation) + translation);
 			}
 			else if (type == "f ")
 			{
 				unsigned int summitIndex[3], normalIndex[3];
 				const char *chh = line.c_str();
-				std::cout << "b sc\n";
 				sscanf(chh, "f %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d\n", &summitIndex[0], &summitIndex[1], &summitIndex[2]);
-				std::cout << "a sc\n";
-				std::cout << summitIndex[0] << " index\n";
-				std::cout << summits[summitIndex[0] - 1] << " value\n";
-				std::cout << summits[summitIndex[1] - 1] << " value\n";
-				std::cout << summits[summitIndex[2] - 1] << " value\n";
 
 				// Create a new triangle
 				Triangle t(summits[summitIndex[0] - 1], summits[summitIndex[1] - 1], summits[summitIndex[2] - 1], col);
-				std::cout << t.getNormal() << "\n";
 				_objects.push_back(t);
 			}
-			std::cout << line << '\n';
+			// std::cout << line << '\n';
 		}
 	}
 	else

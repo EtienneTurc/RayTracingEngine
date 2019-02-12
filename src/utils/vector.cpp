@@ -43,6 +43,22 @@ float Vector::getNorm() const
 	return sqrt(_x * _x + _y * _y + _z * _z);
 }
 
+Vector Vector::rotate3D(Vector rot)
+{
+	float angleX = rot.x();
+	float angleY = rot.y();
+	float angleZ = rot.z();
+
+	float sinX = sin(angleX), cosX = cos(angleX);
+	float sinY = sin(angleY), cosY = cos(angleY);
+	float sinZ = sin(angleZ), cosZ = cos(angleZ);
+
+	float x = _x * cosY - _z * sinY + _x * cosZ - _y * sinZ;
+	float y = _y * cosX - _z * sinX + _y * cosZ + _x * sinZ;
+	float z = _z * cosX + _y * sinX + _z * cosY + _x * sinY;
+	return Vector(0.5 * x, 0.5 * y, 0.5 * z);
+}
+
 Vector operator+(const Vector &v1, const Vector &v2)
 {
 	return Vector(v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z());

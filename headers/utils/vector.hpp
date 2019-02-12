@@ -25,6 +25,9 @@ class Vector
 	float dotProduct(Vector v) const;
 	Vector normalize() const;
 	float getNorm() const;
+
+	//Angle in degree
+	Vector rotate3D(Vector rot);
 };
 
 Vector operator+(const Vector &v1, const Vector &v2);

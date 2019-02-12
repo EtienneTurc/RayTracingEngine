@@ -32,17 +32,20 @@ int main(int argc, char const *argv[])
 
 	std::vector<Light> lights;
 	color_rgb col = {255, 255, 255};
-	Vector l1(0, 2, 0);
+	Vector l1(0, 0, 0);
 	Light L1(l1, col);
-	Vector l2(1, 5, 2);
-	col = {250, 250, 250};
-	Light L2(l2, col);
-	lights.push_back(L2);
+	// Vector l2(1, 5, 2);
+	// col = {250, 250, 250};
+	// Light L2(l2, col);
+	// lights.push_back(L2);
 	lights.push_back(L1);
 
 	Scene scene(cam, screen, lights, obj);
-	Vector tr(3, 0, 0);
-	scene.loaderObj("./objects/cube.obj", {255, 0, 0}, tr);
+	Vector tr(0, 0, 0);
+	Vector rot(90, 0, 0);
+	scene.loaderObj("./objects/chair.obj", {255, 0, 0}, tr, rot);
+
+	std::cout << "Scene loaded\nRay tracing in progress\n";
 
 	scene.render();
 
