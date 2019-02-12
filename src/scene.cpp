@@ -52,18 +52,6 @@ void Scene::getContributingLights(const Vector direction, const Vector intersect
 		if (!hidden)
 			lights_seen.push_back(l);
 	}
-	if (traced < 100 && lights_seen.size() == 0)
-	{
-		if (traced > 2)
-		{
-			std::cout << traced << "\n";
-		}
-		Vector v = _objects[index].getNormalFromDirection(direction);
-		Vector u = -1 * direction;
-		Vector p = u.dotProduct(v) * v;
-		Vector new_direction = 2 * p - u;
-		trace(-1 * intersection, new_direction, traced + 1, source);
-	}
 }
 
 color_rgb Scene::computePixelColor(const std::vector<unsigned> lights_seen, const Vector obj_normal, const Vector intersection, const color_rgb source)
@@ -94,13 +82,48 @@ void Scene::trace(Vector point, Vector direction, int traced, color_rgb &source)
 
 		getContributingLights(direction, intersection, index, lights_seen, source, traced);
 
+		float transparency = _objects[index].getTransparency();
+
+		// reflexion
+		color_rgb reflexion_source = {0, 0, 0};
+		if (traced < 100 && lights_seen.size() == 0)
+		{
+			Vector v = _objects[index].getNormalFromDirection(direction);
+			Vector u = -1 * direction;
+			Vector p = u.dotProduct(v) * v;
+			Vector new_direction = 2 * p - u;
+			trace(intersection, new_direction, traced + 1, reflexion_source);
+		}
+
+		//Transparency
+		color_rgb transparency_source = {0, 0, 0};
+		if (traced < 10 && lights_seen.size() == 0)
+		{
+			trace(intersection, direction, traced + 1, transparency_source);
+		}
+
+		// std::cout << "New\n";
+		// std::cout << source << "\n";
+		// std::cout << transparency << "\n";
+		// std::cout << reflexion_source << "\n";
+		// std::cout << reflex << "\n";
+		// std::cout << transparency_source << "\n";
+		// std::cout << transp << "\n";
+		// transparency_source = transp * transparency * transparency_source;
+		// std::cout << transparency_source << "\n";
+		// std::cout << source << "\n";
+
 		//set up the normal correctly
 		Vector obj_normal = _objects[index].getNormalFromDirection(direction);
 
 		// set the pixel color
 		color_rgb local_source = {0, 0, 0};
-		local_source = computePixelColor(lights_seen, obj_normal, intersection, source);
+		local_source = computePixelColor(lights_seen, obj_normal, intersection, reflexion_source);
+		// std::cout << local_source << "\n";
+		local_source = addSynthese((1 - transparency) * local_source, transparency * transparency_source);
+		// std::cout << local_source << "\n";
 		source = subbSynthese(_objects[index].getColor(), local_source);
+		// std::cout << source << "\n";
 	}
 }
 

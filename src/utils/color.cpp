@@ -1,4 +1,5 @@
 #include "utils/color.hpp"
+#include <iostream>
 
 color_rgb subbSynthese(const color_rgb obj, const color_rgb li)
 {
@@ -27,4 +28,12 @@ operator*(float lambda, const color_rgb col)
 color_rgb operator*(const color_rgb col, float lambda)
 {
 	return lambda * col;
+}
+
+std::ostream &operator<<(std::ostream &stream, const color_rgb &col)
+{
+	stream << '(' << unsigned(col[0]) << ',' << unsigned(col[1])
+		   << ',' << unsigned(col[2])
+		   << ')';
+	return stream;
 }
