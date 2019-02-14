@@ -9,4 +9,6 @@ color_rgb addSynthese(const color_rgb l1, const color_rgb l2);   //pour ajouter 
 color_rgb operator*(const color_rgb col, float lambda);
 color_rgb operator*(float lambda, const color_rgb col);
 
+std::ostream &operator<<(std::ostream &stream, const color_rgb &col);
+
 #endif

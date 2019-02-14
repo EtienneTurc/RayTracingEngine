@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
 	Vector A3(10000, 10000, -5);
 	Vector B3(10000, -10000, -5);
 	Vector C3(-10000, 0, -5);
-	Triangle T3(A3, B3, C3, {50, 50, 50});
+	Triangle T3(A3, B3, C3, {50, 50, 50}, 0);
 	obj.push_back(T3);
 	// obj.push_back(T1);
 	// obj.push_back(T2);
