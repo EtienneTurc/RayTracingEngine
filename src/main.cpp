@@ -34,16 +34,18 @@ int main(int argc, char const *argv[])
 	color_rgb col = {255, 255, 255};
 	Vector l1(0, 0, 0);
 	Light L1(l1, col);
-	// Vector l2(1, 5, 2);
-	// col = {250, 250, 250};
-	// Light L2(l2, col);
-	// lights.push_back(L2);
+	Vector l2(0, 3, 3);
+	col = {250, 250, 250};
+	Light L2(l2, col);
+	lights.push_back(L2);
 	lights.push_back(L1);
 
 	Scene scene(cam, screen, lights, obj);
-	Vector tr(0, 0, 0);
+	Vector tr(4, -1, 0);
 	Vector rot(90, 0, 0);
-	scene.loaderObj("./objects/chair.obj", {255, 0, 0}, tr, rot);
+	// scene.loaderObj("./objects/two_triangle.obj", {255, 0, 0}, tr, nul);
+	// scene.loaderObj("./objects/basic_triangle.obj", {255, 0, 0}, tr, nul);
+	scene.loaderObj("./objects/sphere2.obj", {255, 0, 0}, tr, nul);
 
 	std::cout << "Scene loaded\nRay tracing in progress\n";
 

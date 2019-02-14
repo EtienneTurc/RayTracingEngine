@@ -149,17 +149,52 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				v >> y;
 				v >> z;
 				summits.push_back(Vector(x, y, z).rotate3D(rotation) + translation);
+				// std::cout << summits.back() << "\n";
+				// std::cout << line.substr(2) << "\n";
 			}
 			else if (type == "f ")
 			{
-				unsigned int summitIndex[3], normalIndex[3];
-				const char *chh = line.c_str();
-				sscanf(chh, "f %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d\n", &summitIndex[0], &summitIndex[1], &summitIndex[2]);
+				// std::cout << "f\n";
+				std::vector<unsigned> index_summits;
+				std::string sub_line = line.substr(1);
+				while (sub_line.length() > 1)
+				{
+					unsigned index_value;
+					const char *chh = sub_line.c_str();
+					// std::cout << "before scanf\n";
+					sscanf(chh, " %d/", &index_value);
+					// std::cout << index_value << " index\n";
+					index_summits.push_back(index_value);
+					int i = 1;
+					if (sub_line[i] == ' ')
+					{
+						++i;
+					}
 
-				// Create a new triangle
-				Triangle t(summits[summitIndex[0] - 1], summits[summitIndex[1] - 1], summits[summitIndex[2] - 1], col);
-				_objects.push_back(t);
+					while (sub_line[i] != ' ' && i < sub_line.length() - 1)
+					{
+						++i;
+					}
+
+					sub_line = sub_line.substr(i);
+					// std::cout << i << " i, sub: " << sub_line.substr(i) << "\n";
+					// std::cout << sub_line << "\n";
+				}
+
+				// for (unsigned i = 0; i < index_summits.size(); ++i)
+				// {
+				// 	std::cout << summits[index_summits[i]] << ", ";
+				// }
+				// std::cout << "\n";
+
+				//create traingle
+				for (unsigned i = 1; i < index_summits.size() - 1; ++i)
+				{
+					Triangle t(summits[index_summits[0] - 1], summits[index_summits[i] - 1], summits[index_summits[i + 1] - 1], col);
+					_objects.push_back(t);
+				}
 			}
+			// }
 			// std::cout << line << '\n';
 		}
 	}
