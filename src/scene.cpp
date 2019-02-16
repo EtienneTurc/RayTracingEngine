@@ -6,14 +6,14 @@ void Scene::getObjectsIntersection(const Vector direction, const Vector point, i
 {
 	index = -1;
 	Vector tmp_intersection(0, 0, 0);
-	int min_distance;
+	int min_distance = -1;
 
 	for (int i = 0; i < _objects.size(); i++)
 	{
 		if (_objects[i].isIntersecting(point, direction, tmp_intersection))
 		{
 			float distance = (tmp_intersection - point).getNorm();
-			if (index == -1 || min_distance > distance)
+			if (index == -1 || min_distance == -1 || min_distance > distance)
 			{
 				intersection = tmp_intersection;
 				min_distance = distance;
@@ -131,6 +131,7 @@ void Scene::render()
 {
 	unsigned width = _screen.getWidth();
 	unsigned height = _screen.getHeight();
+	unsigned steps = 0;
 
 	Vector camera_dir = _camera.getDirection();
 	Vector screen_center = camera_dir.normalize() * _camera.getDistance();
@@ -149,6 +150,13 @@ void Scene::render()
 			trace(camera_position, direction, 1, source);
 
 			_screen.setPixelColor(row, col, source);
+		}
+
+		if (col % 50 == 0)
+		{
+			steps < col ? steps = col : steps = steps;
+			std::cout << "Progress " << (float)steps / (float)width * 100 << " %"
+					  << "\n";
 		}
 	}
 	_screen.save("first_image.ppm");
@@ -213,7 +221,7 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				//create traingle
 				for (unsigned i = 1; i < index_summits.size() - 1; ++i)
 				{
-					Triangle t(summits[index_summits[0] - 1], summits[index_summits[i] - 1], summits[index_summits[i + 1] - 1], col);
+					Triangle t(summits[index_summits[0] - 1], summits[index_summits[i] - 1], summits[index_summits[i + 1] - 1], col, 0);
 					_objects.push_back(t);
 				}
 			}
