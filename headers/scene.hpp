@@ -16,7 +16,7 @@ class Scene
   private:
 	Camera _camera;
 	Screen _screen;
-	std::vector<Triangle> _objects;
+	std::vector<Object *> _objects;
 	std::vector<Light> _lights;
 
 	void getObjectsIntersection(const Vector direction, const Vector point, int &index, Vector &intersection);
@@ -25,7 +25,7 @@ class Scene
 	void trace(Vector intersection, Vector direction, int traced, color_rgb &source);
 
   public:
-	Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Triangle> t);
+	Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Object *> t);
 	~Scene() {}
 
 	void render();

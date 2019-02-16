@@ -1,6 +1,6 @@
 #include "triangle.hpp"
 
-Triangle::Triangle(const Vector A, const Vector B, const Vector C, const color_rgb col, const float transparency) : _A(A), _B(B), _C(C), _color(col), _transparency(transparency) {}
+Triangle::Triangle(const Vector A, const Vector B, const Vector C, const color_rgb col, const float transparency) : _A(A), _B(B), _C(C), Object(col, transparency) {}
 
 Vector Triangle::getNormal() const
 {
@@ -18,16 +18,6 @@ Vector Triangle::getNormalFromDirection(const Vector direction) const
 		obj_normal = -1 * obj_normal;
 	}
 	return obj_normal;
-}
-
-color_rgb Triangle::getColor() const
-{
-	return _color;
-}
-
-float Triangle::getTransparency() const
-{
-	return _transparency;
 }
 
 bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector &intersection) const

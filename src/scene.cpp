@@ -1,6 +1,14 @@
 #include "scene.hpp"
 
-Scene::Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Triangle> t) : _camera(c), _screen(s), _lights(l), _objects(t) {}
+Scene::Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Object *> t) : _camera(c), _screen(s), _lights(l), _objects(t) {}
+
+Scene::~Scene()
+{
+	for (unsigned i = 0; i < _objects.size(); i++)
+	{
+		free(_objects[i]);
+	}
+}
 
 void Scene::getObjectsIntersection(const Vector direction, const Vector point, int &index, Vector &intersection)
 {
@@ -10,7 +18,7 @@ void Scene::getObjectsIntersection(const Vector direction, const Vector point, i
 
 	for (int i = 0; i < _objects.size(); i++)
 	{
-		if (_objects[i].isIntersecting(point, direction, tmp_intersection))
+		if (_objects[i]->isIntersecting(point, direction, tmp_intersection))
 		{
 			float distance = (tmp_intersection - point).getNorm();
 			if (index == -1 || min_distance == -1 || min_distance > distance)
@@ -39,7 +47,7 @@ void Scene::getContributingLights(const Vector direction, const Vector intersect
 		{
 			if (index == i)
 				continue;
-			if (_objects[i].isIntersecting(intersection, direction_to_light, intersection_pt))
+			if (_objects[i]->isIntersecting(intersection, direction_to_light, intersection_pt))
 			{
 				if ((intersection - intersection_pt).getNorm() < (intersection - _lights[l].getPosition() + camera_position).getNorm())
 				{
@@ -82,13 +90,13 @@ void Scene::trace(Vector point, Vector direction, int traced, color_rgb &source)
 
 		getContributingLights(direction, intersection, index, lights_seen, source, traced);
 
-		float transparency = _objects[index].getTransparency();
+		float transparency = _objects[index]->getTransparency();
 
 		// reflexion
 		color_rgb reflexion_source = {0, 0, 0};
 		if (traced < 100 && lights_seen.size() == 0)
 		{
-			Vector v = _objects[index].getNormalFromDirection(direction);
+			Vector v = _objects[index]->getNormalFromDirection(direction);
 			Vector u = -1 * direction;
 			Vector p = u.dotProduct(v) * v;
 			Vector new_direction = 2 * p - u;
@@ -114,7 +122,7 @@ void Scene::trace(Vector point, Vector direction, int traced, color_rgb &source)
 		// std::cout << source << "\n";
 
 		//set up the normal correctly
-		Vector obj_normal = _objects[index].getNormalFromDirection(direction);
+		Vector obj_normal = _objects[index]->getNormalFromDirection(direction);
 
 		// set the pixel color
 		color_rgb local_source = {0, 0, 0};
@@ -122,7 +130,7 @@ void Scene::trace(Vector point, Vector direction, int traced, color_rgb &source)
 		// std::cout << local_source << "\n";
 		local_source = addSynthese((1 - transparency) * local_source, transparency * transparency_source);
 		// std::cout << local_source << "\n";
-		source = subbSynthese(_objects[index].getColor(), local_source);
+		source = subbSynthese(_objects[index]->getColor(), local_source);
 		// std::cout << source << "\n";
 	}
 }
@@ -152,6 +160,7 @@ void Scene::render()
 			_screen.setPixelColor(row, col, source);
 		}
 
+		//Progress status
 		if (col % 50 == 0)
 		{
 			steps < col ? steps = col : steps = steps;
@@ -180,8 +189,6 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				v >> y;
 				v >> z;
 				summits.push_back(Vector(x, y, z).rotate3D(rotation) + translation);
-				// std::cout << summits.back() << "\n";
-				// std::cout << line.substr(2) << "\n";
 			}
 			else if (type == "f ")
 			{
@@ -192,9 +199,7 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				{
 					unsigned index_value;
 					const char *chh = sub_line.c_str();
-					// std::cout << "before scanf\n";
 					sscanf(chh, " %d/", &index_value);
-					// std::cout << index_value << " index\n";
 					index_summits.push_back(index_value);
 					int i = 1;
 					if (sub_line[i] == ' ')
@@ -208,24 +213,15 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 					}
 
 					sub_line = sub_line.substr(i);
-					// std::cout << i << " i, sub: " << sub_line.substr(i) << "\n";
-					// std::cout << sub_line << "\n";
 				}
-
-				// for (unsigned i = 0; i < index_summits.size(); ++i)
-				// {
-				// 	std::cout << summits[index_summits[i]] << ", ";
-				// }
-				// std::cout << "\n";
 
 				//create traingle
 				for (unsigned i = 1; i < index_summits.size() - 1; ++i)
 				{
-					Triangle t(summits[index_summits[0] - 1], summits[index_summits[i] - 1], summits[index_summits[i + 1] - 1], col, 0);
+					Triangle *t = new Triangle(summits[index_summits[0] - 1], summits[index_summits[i] - 1], summits[index_summits[i + 1] - 1], col, 0);
 					_objects.push_back(t);
 				}
 			}
-			// }
 			// std::cout << line << '\n';
 		}
 	}
