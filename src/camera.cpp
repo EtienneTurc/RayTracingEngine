@@ -1,6 +1,6 @@
 #include "camera.hpp"
 
-Camera::Camera(Vector pos, Vector dir, float dist_n) : _position(pos), _direction(dir), _dist_normal(dist_n)
+Camera::Camera(const Vector &pos, const Vector &dir, float dist_n) : _position(pos), _direction(dir), _dist_normal(dist_n)
 {
 	_direction.normalize();
 }

@@ -19,12 +19,12 @@ float Vector::z() const
 	return _z;
 }
 
-Vector Vector::crossProduct(Vector v) const
+Vector Vector::crossProduct(const Vector &v) const
 {
 	return Vector(_y * v.z() - _z * v.y(), _z * v.x() - _x * v.z(), _x * v.y() - _y * v.x());
 }
 
-float Vector::dotProduct(Vector v) const
+float Vector::dotProduct(const Vector &v) const
 {
 	return _x * v.x() + _y * v.y() + _z * v.z();
 }
@@ -53,12 +53,12 @@ Vector operator-(const Vector &v1, const Vector &v2)
 	return Vector(v1.x() - v2.x(), v1.y() - v2.y(), v1.z() - v2.z());
 }
 
-Vector operator*(const Vector &v, const float lambda)
+Vector operator*(const Vector &v, float lambda)
 {
 	return Vector(v.x() * lambda, v.y() * lambda, v.z() * lambda);
 }
 
-Vector operator*(const float lambda, const Vector &v)
+Vector operator*(float lambda, const Vector &v)
 {
 	return v * lambda;
 }

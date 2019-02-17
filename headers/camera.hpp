@@ -11,7 +11,7 @@ class Camera
 	float _dist_normal;
 
   public:
-	Camera(Vector pos, Vector dir, float dist_n);
+	Camera(const Vector &pos, const Vector &dir, float dist_n);
 	~Camera() {}
 
 	Vector getDirection() const;

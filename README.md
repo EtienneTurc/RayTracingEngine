@@ -9,3 +9,9 @@
  - library of objects + object loader
  - user interface
  - try hard: du temps réel en openGL
+
+
+# To know
+
+absortion = 1 - reflexion²
+transmittance = (1-reflectance) * (1-absorptance)

@@ -1,23 +1,14 @@
 #include "triangle.hpp"
 
-Triangle::Triangle(const Vector A, const Vector B, const Vector C, const color_rgb col, const float transparency) : _A(A), _B(B), _C(C), _color(col), _transparency(transparency) {}
+#define EPSILON 0.0000001
+
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgb &col, float transparency, float reflexivity) : _A(A), _B(B), _C(C), _color(col), _transparency(transparency), _reflexivity(reflexivity) {}
 
 Vector Triangle::getNormal() const
 {
 	Vector edge1 = _A - _B;
 	Vector edge2 = _A - _C;
 	return edge1.crossProduct(edge2);
-}
-
-Vector Triangle::getNormalFromDirection(const Vector direction) const
-{
-	Vector obj_normal = this->getNormal().normalize();
-	bool is_good_normal = obj_normal.dotProduct(direction) < 0;
-	if (!is_good_normal)
-	{
-		obj_normal = -1 * obj_normal;
-	}
-	return obj_normal;
 }
 
 color_rgb Triangle::getColor() const
@@ -30,11 +21,24 @@ float Triangle::getTransparency() const
 	return _transparency;
 }
 
-bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector &intersection) const
+float Triangle::getReflexivity() const
 {
-	//TODO place it better
-	const float EPSILON = 0.0000001;
+	return _reflexivity;
+}
 
+Vector Triangle::getNormalFromDirection(const Vector &direction) const
+{
+	Vector obj_normal = this->getNormal().normalize();
+	bool is_good_normal = obj_normal.dotProduct(direction) < 0;
+	if (!is_good_normal)
+	{
+		obj_normal = -1 * obj_normal;
+	}
+	return obj_normal;
+}
+
+bool Triangle::isIntersecting(const Vector &point, const Vector &direction, Vector &intersection) const
+{
 	Vector edge1 = (_B - _A);
 	Vector edge2 = (_C - _A);
 

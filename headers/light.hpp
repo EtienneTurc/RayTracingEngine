@@ -11,7 +11,7 @@ class Light
 	color_rgb _color;
 
   public:
-	Light(Vector pos, color_rgb c);
+	Light(const Vector &pos, const color_rgb &c);
 	~Light() {}
 
 	color_rgb getColor() const;

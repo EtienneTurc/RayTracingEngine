@@ -12,17 +12,19 @@ class Triangle
 	Vector _C;
 	color_rgb _color;
 	float _transparency; //Between 0 and 1.
+	float _reflexivity;  //Between 0 and 1.
 
   public:
-	Triangle(const Vector A, const Vector B, const Vector C, const color_rgb col, const float transparency);
+	Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgb &col, float transparency, float reflexivity);
 	~Triangle() {}
 
 	Vector getNormal() const;
 	color_rgb getColor() const;
 	float getTransparency() const;
+	float getReflexivity() const;
 
-	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection) const;
-	Vector getNormalFromDirection(const Vector direction) const;
+	Vector getNormalFromDirection(const Vector &direction) const;
+	bool isIntersecting(const Vector &point, const Vector &direction, Vector &intersection) const;
 };
 
 #endif //TRIANGLE_HPP

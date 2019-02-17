@@ -21,16 +21,16 @@ class Vector
 	float y() const;
 	float z() const;
 
-	Vector crossProduct(Vector v) const;
-	float dotProduct(Vector v) const;
+	Vector crossProduct(const Vector &v) const;
+	float dotProduct(const Vector &v) const;
 	Vector normalize() const;
 	float getNorm() const;
 };
 
 Vector operator+(const Vector &v1, const Vector &v2);
 Vector operator-(const Vector &v1, const Vector &v2);
-Vector operator*(const Vector &v, const float lambda);
-Vector operator*(const float lambda, const Vector &v);
+Vector operator*(const Vector &v, float lambda);
+Vector operator*(float lambda, const Vector &v);
 bool operator==(const Vector &v1, const Vector &v2);
 bool operator!=(const Vector &v1, const Vector &v2);
 
