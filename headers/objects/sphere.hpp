@@ -16,7 +16,7 @@ class Sphere : public Object
 	~Sphere();
 
 	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection) const;
-	Vector getNormalFromDirection(const Vector direction) const;
+	Vector getNormalFromDirection(const Vector direction);
 };
 
 #endif //SPHERE_HPP

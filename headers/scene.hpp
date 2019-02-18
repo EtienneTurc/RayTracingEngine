@@ -9,7 +9,7 @@
 #include "camera.hpp"
 #include "screen.hpp"
 #include "light.hpp"
-#include "triangle.hpp"
+#include "objects/triangle.hpp"
 
 class Scene
 {
@@ -26,7 +26,7 @@ class Scene
 
   public:
 	Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Object *> t);
-	~Scene() {}
+	~Scene();
 
 	void render();
 	void loaderObj(const std::string filename, const color_rgb col, const Vector translation, const Vector rotation);

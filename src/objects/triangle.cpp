@@ -1,4 +1,4 @@
-#include "triangle.hpp"
+#include "objects/triangle.hpp"
 #include "utils/params.hpp"
 
 Triangle::Triangle(const Vector A, const Vector B, const Vector C, const color_rgb col, const float transparency) : _A(A), _B(B), _C(C), Object(col, transparency) {}
