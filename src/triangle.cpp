@@ -1,4 +1,5 @@
 #include "triangle.hpp"
+#include "utils/params.hpp"
 
 Triangle::Triangle(const Vector A, const Vector B, const Vector C, const color_rgb col, const float transparency) : _A(A), _B(B), _C(C), Object(col, transparency) {}
 
@@ -23,7 +24,7 @@ Vector Triangle::getNormalFromDirection(const Vector direction) const
 bool Triangle::isIntersecting(const Vector point, const Vector direction, Vector &intersection) const
 {
 	//TODO place it better
-	const float EPSILON = 0.0000001;
+	// const float EPSILON = 0.0000001; -> params
 
 	Vector edge1 = (_B - _A);
 	Vector edge2 = (_C - _A);
