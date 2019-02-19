@@ -64,28 +64,82 @@ Scene jsonToScene(string path)
 
 	Json::array objects_json = scene_json["objects"].array_items();
 
+	float positions[] = {-1.0, -1.0, -1.0, // triangle 1 : begin
+						 -1.0, -1.0, 1.0,
+						 -1.0, 1.0, 1.0, // triangle 1 : end
+						 1.0, 1.0, -1.0, // triangle 2 : begin
+						 -1.0, -1.0, -1.0,
+						 -1.0, 1.0, -1.0, // triangle 2 : end
+						 1.0, -1.0, 1.0,
+						 -1.0, -1.0, -1.0,
+						 1.0, -1.0, -1.0,
+						 1.0, 1.0, -1.0,
+						 1.0, -1.0, -1.0,
+						 -1.0, -1.0, -1.0,
+						 -1.0, -1.0, -1.0,
+						 -1.0, 1.0, 1.0,
+						 -1.0, 1.0, -1.0,
+						 1.0, -1.0, 1.0,
+						 -1.0, -1.0, 1.0,
+						 -1.0, -1.0, -1.0,
+						 -1.0, 1.0, 1.0,
+						 -1.0, -1.0, 1.0,
+						 1.0, -1.0, 1.0,
+						 1.0, 1.0, 1.0,
+						 1.0, -1.0, -1.0,
+						 1.0, 1.0, -1.0,
+						 1.0, -1.0, -1.0,
+						 1.0, 1.0, 1.0,
+						 1.0, -1.0, 1.0,
+						 1.0, 1.0, 1.0,
+						 1.0, 1.0, -1.0,
+						 -1.0, 1.0, -1.0,
+						 1.0, 1.0, 1.0,
+						 -1.0, 1.0, -1.0,
+						 -1.0, 1.0, 1.0,
+						 1.0, 1.0, 1.0,
+						 -1.0, 1.0, 1.0,
+						 1.0, -1.0, 1.0};
+
 	std::vector<Object *> obj;
-	for (int i = 0; i < objects_json.size(); i++)
+	// for (int i = 0; i < objects_json.size(); i++)
+	// {
+	// 	string type = objects_json[i]["type"].string_value();
+	// 	if (type == "triangle")
+	// 	{
+	// 		Json::array positions = objects_json[i]["positions"].array_items();
+
+	// 		Vector tr(2, 0, 0);
+
+	// 		if (positions.size() != 3)
+	// 			continue;
+	// 		Vector A = stringToVector(positions[0].string_value()) + tr;
+	// 		Vector B = stringToVector(positions[1].string_value()) + tr;
+	// 		Vector C = stringToVector(positions[2].string_value()) + tr;
+
+	// 		color_rgb color = stringToColor(objects_json[i]["color"].string_value());
+
+	// 		float transparency = objects_json[i]["transparency"].number_value();
+	// 		float reflexitivity = objects_json[i]["reflexitivity"].number_value();
+
+	// 		Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
+	// 		obj.push_back(T);
+	// 	}
+	// }
+
+	for (int i = 0; i < 108;)
 	{
-		string type = objects_json[i]["type"].string_value();
-		if (type == "triangle")
-		{
-			Json::array positions = objects_json[i]["positions"].array_items();
+		Vector tr(3, 2, -2);
 
-			if (positions.size() != 3)
-				continue;
-			Vector A = stringToVector(positions[0].string_value());
-			Vector B = stringToVector(positions[1].string_value());
-			Vector C = stringToVector(positions[2].string_value());
-
-			color_rgb color = stringToColor(objects_json[i]["color"].string_value());
-
-			float transparency = objects_json[i]["transparency"].number_value();
-			float reflexitivity = objects_json[i]["reflexitivity"].number_value();
-
-			Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
-			obj.push_back(T);
-		}
+		Vector A(positions[i], positions[i + 1], positions[i + 2]);
+		i += 3;
+		Vector B(positions[i], positions[i + 1], positions[i + 2]);
+		i += 3;
+		Vector C(positions[i], positions[i + 1], positions[i + 2]);
+		i += 3;
+		color_rgb col = {150, 150, 150};
+		Triangle *T = new Triangle(A + tr, B + tr, C + tr, col, 0, 0);
+		obj.push_back(T);
 	}
 
 	// Vector tr(0, 0, 0);
