@@ -171,7 +171,7 @@ void Scene::render()
 	_screen.save("first_image.ppm");
 }
 
-void Scene::loaderObj(const std::string filename, const color_rgb col, const Vector translation, const Vector rotation)
+void Scene::loaderObj(const std::string filename, const color_rgb col, const Vector translation, const Vector rotation, const Vector magnify)
 {
 	std::ifstream file(filename);
 	if (file.is_open())
@@ -228,16 +228,16 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				for (unsigned i = 1; i < index_summits.size() - 1; ++i)
 				{
 					Vector a = summits[index_summits[0] - 1];
-					a = (a - barycenter).rotate3D(rotation) + translation + barycenter;
+					a = (a - barycenter).rotate3D(rotation).magnify(magnify) + translation + barycenter;
 					Vector b = summits[index_summits[i] - 1];
-					b = (b - barycenter).rotate3D(rotation) + translation + barycenter;
+					b = (b - barycenter).rotate3D(rotation).magnify(magnify) + translation + barycenter;
 					Vector c = summits[index_summits[i + 1] - 1];
-					c = (c - barycenter).rotate3D(rotation) + translation + barycenter;
+					c = (c - barycenter).rotate3D(rotation).magnify(magnify) + translation + barycenter;
 					Triangle *t = new Triangle(a, b, c, col, 0);
 					_objects.push_back(t);
 				}
 			}
-			std::cout << line << '\n';
+			// std::cout << line << '\n';
 		}
 	}
 	else

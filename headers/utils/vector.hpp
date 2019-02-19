@@ -31,7 +31,8 @@ class Vector
 	float getNorm() const;
 
 	//Angle in radian
-	Vector rotate3D(Vector rot);
+	Vector rotate3D(const Vector rot);
+	Vector magnify(const Vector mag);
 };
 
 Vector operator+(const Vector &v1, const Vector &v2);

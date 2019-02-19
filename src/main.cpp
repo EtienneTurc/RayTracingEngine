@@ -44,9 +44,10 @@ int main(int argc, char const *argv[])
 	Scene scene(cam, screen, lights, obj);
 	Vector tr(0, 0, 0);
 	Vector rot(PI / 2, 0, PI / 2);
+	Vector mag(2, 2, 2);
 	// scene.loaderObj("./objects/two_triangle.obj", {255, 0, 0}, tr, nul);
 	// scene.loaderObj("./objects/basic_triangle.obj", {255, 0, 0}, tr, nul);
-	scene.loaderObj("./objects/chair.obj", {150, 150, 150}, tr, rot);
+	scene.loaderObj("./objects/chair.obj", {150, 150, 150}, tr, rot, mag);
 
 	std::cout << "Scene loaded\nRay tracing in progress\n";
 
