@@ -43,7 +43,34 @@ float Vector::getNorm() const
 	return sqrt(_x * _x + _y * _y + _z * _z);
 }
 
-Vector operator+(const Vector &v1, const Vector &v2)
+Vector Vector::rotateX(float angle)
+{
+	return Vector(_x, _y * cos(angle) - _z * sin(angle), _y * sin(angle) + _z * cos(angle));
+}
+
+Vector Vector::rotateY(float angle)
+{
+	return Vector(_x * cos(angle) + _z * sin(angle), _y, -_x * sin(angle) + _z * cos(angle));
+}
+
+Vector Vector::rotateZ(float angle)
+{
+	return Vector(_x * cos(angle) - _y * sin(angle), _x * sin(angle) + _y * cos(angle), _z);
+}
+
+Vector Vector::rotate3D(const Vector &rot)
+{
+	Vector res(_x, _y, _z);
+	return res.rotateX(rot.x()).rotateY(rot.y()).rotateZ(rot.z());
+}
+
+Vector Vector::magnify(const Vector &mag)
+{
+	return Vector(_x * mag.x(), _y * mag.y(), _z * mag.z());
+}
+
+Vector
+operator+(const Vector &v1, const Vector &v2)
 {
 	return Vector(v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z());
 }

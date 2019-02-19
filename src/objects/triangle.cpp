@@ -1,29 +1,13 @@
-#include "triangle.hpp"
+#include "objects/triangle.hpp"
+#include "utils/params.hpp"
 
-#define EPSILON 0.0000001
-
-Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgb &col, float transparency, float reflexivity) : _A(A), _B(B), _C(C), _color(col), _transparency(transparency), _reflexivity(reflexivity) {}
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgb &col, float transparency, float reflexivity) : _A(A), _B(B), _C(C), Object(col, transparency, reflexivity) {}
 
 Vector Triangle::getNormal() const
 {
 	Vector edge1 = _A - _B;
 	Vector edge2 = _A - _C;
 	return edge1.crossProduct(edge2);
-}
-
-color_rgb Triangle::getColor() const
-{
-	return _color;
-}
-
-float Triangle::getTransparency() const
-{
-	return _transparency;
-}
-
-float Triangle::getReflexivity() const
-{
-	return _reflexivity;
 }
 
 Vector Triangle::getNormalFromDirection(const Vector &direction) const

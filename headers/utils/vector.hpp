@@ -11,6 +11,10 @@ class Vector
 	float _y;
 	float _z;
 
+	Vector rotateX(float angle);
+	Vector rotateY(float angle);
+	Vector rotateZ(float angle);
+
   public:
 	Vector() {}
 	Vector(float x, float y, float z);
@@ -25,6 +29,10 @@ class Vector
 	float dotProduct(const Vector &v) const;
 	Vector normalize() const;
 	float getNorm() const;
+
+	//Angle in radian
+	Vector rotate3D(const Vector &rot);
+	Vector magnify(const Vector &mag);
 };
 
 Vector operator+(const Vector &v1, const Vector &v2);

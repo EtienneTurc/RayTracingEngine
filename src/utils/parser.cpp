@@ -1,9 +1,11 @@
 #include <fstream>
 #include <streambuf>
 #include <sstream>
+#include <math.h>
 #include "utils/json11.hpp"
 
 #include "utils/parser.hpp"
+#include "utils/loader_obj.hpp"
 
 using namespace json11;
 using namespace std;
@@ -62,7 +64,7 @@ Scene jsonToScene(string path)
 
 	Json::array objects_json = scene_json["objects"].array_items();
 
-	std::vector<Triangle> obj;
+	std::vector<Object *> obj;
 	for (int i = 0; i < objects_json.size(); i++)
 	{
 		string type = objects_json[i]["type"].string_value();
@@ -81,10 +83,16 @@ Scene jsonToScene(string path)
 			float transparency = objects_json[i]["transparency"].number_value();
 			float reflexitivity = objects_json[i]["reflexitivity"].number_value();
 
-			Triangle T(A, B, C, color, transparency, reflexitivity);
+			Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
 			obj.push_back(T);
 		}
 	}
+
+	// Vector tr(0, 0, 0);
+	// // Vector rot(M_PI / 2, 0, M_PI / 2);
+	// Vector rot(0, 0, 0);
+	// Vector mag(1, 1, 1);
+	// obj = loaderObj("./objects/chair.obj", {50, 50, 255}, tr, rot, mag);
 
 	// Camera
 	Json camera_json = scene_json["camera"];

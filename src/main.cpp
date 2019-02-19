@@ -1,5 +1,5 @@
-// #include "scene.hpp"
 #include "utils/parser.hpp"
+#include "utils/params.hpp"
 #include <chrono>
 
 int main(int argc, char const *argv[])
@@ -10,6 +10,7 @@ int main(int argc, char const *argv[])
 	start = std::chrono::system_clock::now();
 
 	Scene scene = jsonToScene("scene.json");
+	// scene.loaderObj("./objects/chair.obj", {150, 150, 150}, tr, rot, mag);
 
 	scene.render();
 
