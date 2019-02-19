@@ -177,6 +177,8 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 	if (file.is_open())
 	{
 		std::string line;
+		// std::vector<Triangle *> objects;
+		float X = 0, Y = 0, Z = 0;
 		std::vector<Vector> summits;
 		while (getline(file, line))
 		{
@@ -188,7 +190,10 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 				v >> x;
 				v >> y;
 				v >> z;
-				summits.push_back(Vector(x, y, z).rotate3D(rotation) + translation);
+				summits.push_back(Vector(x, y, z));
+				X += x;
+				Y += y;
+				Z += z;
 			}
 			else if (type == "f ")
 			{
@@ -215,14 +220,24 @@ void Scene::loaderObj(const std::string filename, const color_rgb col, const Vec
 					sub_line = sub_line.substr(i);
 				}
 
+				std::cout << summits.size() << " summits size\n";
+
+				Vector barycenter(X / summits.size(), Y / summits.size(), Z / summits.size());
+
 				//create traingle
 				for (unsigned i = 1; i < index_summits.size() - 1; ++i)
 				{
-					Triangle *t = new Triangle(summits[index_summits[0] - 1], summits[index_summits[i] - 1], summits[index_summits[i + 1] - 1], col, 0);
+					Vector a = summits[index_summits[0] - 1];
+					a = (a - barycenter).rotate3D(rotation) + translation + barycenter;
+					Vector b = summits[index_summits[i] - 1];
+					b = (b - barycenter).rotate3D(rotation) + translation + barycenter;
+					Vector c = summits[index_summits[i + 1] - 1];
+					c = (c - barycenter).rotate3D(rotation) + translation + barycenter;
+					Triangle *t = new Triangle(a, b, c, col, 0);
 					_objects.push_back(t);
 				}
 			}
-			// std::cout << line << '\n';
+			std::cout << line << '\n';
 		}
 	}
 	else

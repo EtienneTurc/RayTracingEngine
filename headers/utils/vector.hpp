@@ -11,6 +11,10 @@ class Vector
 	float _y;
 	float _z;
 
+	Vector rotateX(float angle);
+	Vector rotateY(float angle);
+	Vector rotateZ(float angle);
+
   public:
 	Vector() {}
 	Vector(float x, float y, float z);
@@ -26,7 +30,7 @@ class Vector
 	Vector normalize() const;
 	float getNorm() const;
 
-	//Angle in degree
+	//Angle in radian
 	Vector rotate3D(Vector rot);
 };
 
