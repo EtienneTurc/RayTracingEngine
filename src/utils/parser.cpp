@@ -64,43 +64,6 @@ Scene jsonToScene(string path)
 
 	Json::array objects_json = scene_json["objects"].array_items();
 
-	float positions[] = {-1.0, -1.0, -1.0, // triangle 1 : begin
-						 -1.0, -1.0, 1.0,
-						 -1.0, 1.0, 1.0, // triangle 1 : end
-						 1.0, 1.0, -1.0, // triangle 2 : begin
-						 -1.0, -1.0, -1.0,
-						 -1.0, 1.0, -1.0, // triangle 2 : end
-						 1.0, -1.0, 1.0,
-						 -1.0, -1.0, -1.0,
-						 1.0, -1.0, -1.0,
-						 1.0, 1.0, -1.0,
-						 1.0, -1.0, -1.0,
-						 -1.0, -1.0, -1.0,
-						 -1.0, -1.0, -1.0,
-						 -1.0, 1.0, 1.0,
-						 -1.0, 1.0, -1.0,
-						 1.0, -1.0, 1.0,
-						 -1.0, -1.0, 1.0,
-						 -1.0, -1.0, -1.0,
-						 -1.0, 1.0, 1.0,
-						 -1.0, -1.0, 1.0,
-						 1.0, -1.0, 1.0,
-						 1.0, 1.0, 1.0,
-						 1.0, -1.0, -1.0,
-						 1.0, 1.0, -1.0,
-						 1.0, -1.0, -1.0,
-						 1.0, 1.0, 1.0,
-						 1.0, -1.0, 1.0,
-						 1.0, 1.0, 1.0,
-						 1.0, 1.0, -1.0,
-						 -1.0, 1.0, -1.0,
-						 1.0, 1.0, 1.0,
-						 -1.0, 1.0, -1.0,
-						 -1.0, 1.0, 1.0,
-						 1.0, 1.0, 1.0,
-						 -1.0, 1.0, 1.0,
-						 1.0, -1.0, 1.0};
-
 	std::vector<Object *> obj;
 	// for (int i = 0; i < objects_json.size(); i++)
 	// {
@@ -127,26 +90,26 @@ Scene jsonToScene(string path)
 	// 	}
 	// }
 
-	for (int i = 0; i < 108;)
-	{
-		Vector tr(3, 2, -2);
+	// for (int i = 0; i < positions.size();)
+	// {
+	// 	Vector tr(3, 1, -1);
 
-		Vector A(positions[i], positions[i + 1], positions[i + 2]);
-		i += 3;
-		Vector B(positions[i], positions[i + 1], positions[i + 2]);
-		i += 3;
-		Vector C(positions[i], positions[i + 1], positions[i + 2]);
-		i += 3;
-		color_rgb col = {150, 150, 150};
-		Triangle *T = new Triangle(A + tr, B + tr, C + tr, col, 0, 0);
-		obj.push_back(T);
-	}
+	// 	Vector A(positions[i], positions[i + 1], positions[i + 2]);
+	// 	i += 3;
+	// 	Vector B(positions[i], positions[i + 1], positions[i + 2]);
+	// 	i += 3;
+	// 	Vector C(positions[i], positions[i + 1], positions[i + 2]);
+	// 	i += 3;
+	// 	color_rgb col = {150, 150, 150};
+	// 	Triangle *T = new Triangle(A + tr, B + tr, C + tr, col, 0, 0);
+	// 	obj.push_back(T);
+	// }
 
-	// Vector tr(0, 0, 0);
-	// // Vector rot(M_PI / 2, 0, M_PI / 2);
+	Vector tr(2, 0, -1.2);
+	Vector rot(0, 0, M_PI / 4);
 	// Vector rot(0, 0, 0);
-	// Vector mag(1, 1, 1);
-	// obj = loaderObj("./objects/chair.obj", {50, 50, 255}, tr, rot, mag);
+	Vector mag(1, 1, 1);
+	obj = loaderObj("./objects/cube.obj", {50, 50, 255}, tr, rot, mag);
 
 	// Camera
 	Json camera_json = scene_json["camera"];
@@ -162,7 +125,8 @@ Scene jsonToScene(string path)
 
 	unsigned height = engine_json["screen_height"].int_value();
 	unsigned width = engine_json["screen_width"].int_value();
-	float pixel_size = engine_json["pixel_size"].number_value();
+	float field_of_vue = engine_json["field_of_vue"].number_value() * M_PI / 180;
+	float pixel_size = 2 * tan(field_of_vue * 90 / M_PI) / height;
 	Vector top_dir = stringToVector(engine_json["top_dir"].string_value());
 
 	Json::array pixels_offset_json = engine_json["pixels_offset"].array_items();

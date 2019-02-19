@@ -14,7 +14,7 @@ int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, 
 {
 	int index = -1;
 	Vector tmp_intersection(0, 0, 0);
-	int min_distance = -1;
+	float min_distance = -1;
 
 	for (int i = 0; i < _objects.size(); i++)
 	{
@@ -41,10 +41,14 @@ color_rgb Scene::getLightContribution(const Vector &point, const Vector &directi
 
 	int index = getObjectsIntersection(direction, point, actual_obj, intersection);
 
+	// std::cout << index << "\n";
+	// std::cout << intersection << "\n";
+
 	// If intersection is not found or is after the light
 	if (index == -1 || ((point - intersection).getNorm() > (point - _lights[light_index].getPosition() + _camera.getPosition()).getNorm()))
 		return _lights[light_index].getColor();
-	return _objects[index]->getTransparency() * getLightContribution(intersection, direction, light_index, index, deep - 1);
+
+	return _objects[index]->getTransparency() * getLightContribution(intersection, direction, light_index, index, deep - 1) + (0.2 * _objects[actual_obj]->getColor());
 }
 
 color_rgb Scene::getLightsContribution(const Vector &point, const Vector &obj_normal, int actual_obj) const
@@ -53,14 +57,14 @@ color_rgb Scene::getLightsContribution(const Vector &point, const Vector &obj_no
 	color_rgb source = {0, 0, 0};
 	color_rgb loc_source = {0, 0, 0};
 	Vector intersection_pt = {0, 0, 0};
-	Vector start_point = point;
 	int deep = 1;
 
 	for (unsigned l = 0; l < _lights.size(); l++)
 	{
 		direction_to_light = _lights[l].getPosition() - point;
 
-		loc_source = getLightContribution(start_point, direction_to_light, l, actual_obj, deep);
+		loc_source = getLightContribution(point, direction_to_light, l, actual_obj, deep);
+		// std::cout << loc_source << "\n";
 
 		// If it's behind
 		// if (direction_to_light.dotProduct(obj_normal) < 0)
@@ -109,7 +113,9 @@ color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_
 
 		// Light color
 		color_rgb lights_color = {0, 0, 0};
-		lights_color = getLightsContribution(intersection - _camera.getPosition(), obj_normal, index);
+		lights_color = getLightsContribution(intersection, obj_normal, index);
+		// std::cout << intersection << "\n";
+		// std::cout << lights_color << "\n";
 
 		// set the pixel color
 		local_source = (1 - reflexivity) * lights_color * _objects[index]->getColor() + reflexivity * reflexion_source;
@@ -134,6 +140,9 @@ void Scene::render()
 	{
 		for (unsigned row = 0; row < height; row++)
 		{
+			// std::cout << "Start\n";
+			// std::cout << "col : " << col << "\n";
+			// std::cout << "row : " << row << "\n";
 			// initialisation
 			color_rgb source = {0, 0, 0};
 			// Antialiasing
@@ -147,13 +156,13 @@ void Scene::render()
 			_screen.setPixelColor(row, col, source);
 		}
 
-		//Progress status
-		if (col % 200 == 0)
-		{
-			steps < col ? steps = col : steps = steps;
-			std::cout << "Progress " << (float)steps / (float)width * 100 << " %";
-			std::cout << "\n";
-		}
+		// //Progress status
+		// if (col % 200 == 0)
+		// {
+		// 	steps < col ? steps = col : steps = steps;
+		// 	std::cout << "Progress " << (float)steps / (float)width * 100 << " %";
+		// 	std::cout << "\n";
+		// }
 	}
 	_screen.save("first_image.ppm");
 }
