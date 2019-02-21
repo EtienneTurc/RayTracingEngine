@@ -13,7 +13,7 @@ class Sphere : public Object
 
   public:
 	Sphere(const Vector &center, float radius, const color_rgb &col, float transparency, float reflexivity);
-	~Sphere();
+	~Sphere() {}
 
 	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection) const;
 	Vector getNormalFromDirection(const Vector direction);

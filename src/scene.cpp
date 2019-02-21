@@ -1,10 +1,10 @@
 #include "scene.hpp"
 
-Scene::Scene(Camera c, Screen s, std::vector<Light> l, std::vector<Object *> t) : _camera(c), _screen(s), _lights(l), _objects(t) {}
+Scene::Scene(Camera c, Screen s, std::vector<Light *> l, std::vector<Object *> t, unsigned recursion_level) : _camera(c), _screen(s), _lights(l), _objects(t), _recursion_level(recursion_level) {}
 
 Scene::~Scene()
 {
-	for (int i = 0; i < _objects.size(); i++)
+	for (size_t i = 0; i < _objects.size(); i++)
 	{
 		delete _objects[i];
 	}
@@ -16,9 +16,9 @@ int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, 
 	Vector tmp_intersection(0, 0, 0);
 	float min_distance = -1;
 
-	for (int i = 0; i < _objects.size(); i++)
+	for (size_t i = 0; i < _objects.size(); i++)
 	{
-		if (actual_obj != i && _objects[i]->isIntersecting(point, direction, tmp_intersection))
+		if (actual_obj != (int)i && _objects[i]->isIntersecting(point, direction, tmp_intersection))
 		{
 			float distance = (tmp_intersection - point).getNorm();
 			if (index == -1 || min_distance == -1 || min_distance > distance)
@@ -41,12 +41,9 @@ color_rgb Scene::getLightContribution(const Vector &point, const Vector &directi
 
 	int index = getObjectsIntersection(direction, point, actual_obj, intersection);
 
-	// std::cout << index << "\n";
-	// std::cout << intersection << "\n";
-
 	// If intersection is not found or is after the light
-	if (index == -1 || ((point - intersection).getNorm() > (point - _lights[light_index].getPosition() + _camera.getPosition()).getNorm()))
-		return _lights[light_index].getColor();
+	if (index == -1 || _lights[light_index]->isIntersectionAfterLight(point, intersection))
+		return _lights[light_index]->getColor();
 
 	return _objects[index]->getTransparency() * getLightContribution(intersection, direction, light_index, index, deep - 1) + (0.2 * _objects[actual_obj]->getColor());
 }
@@ -57,18 +54,13 @@ color_rgb Scene::getLightsContribution(const Vector &point, const Vector &obj_no
 	color_rgb source = {0, 0, 0};
 	color_rgb loc_source = {0, 0, 0};
 	Vector intersection_pt = {0, 0, 0};
-	int deep = 1;
+	int deep = _recursion_level;
 
 	for (unsigned l = 0; l < _lights.size(); l++)
 	{
-		direction_to_light = _lights[l].getPosition() - point;
+		direction_to_light = _lights[l]->getDirectionToLight(point);
 
 		loc_source = getLightContribution(point, direction_to_light, l, actual_obj, deep);
-		// std::cout << loc_source << "\n";
-
-		// If it's behind
-		// if (direction_to_light.dotProduct(obj_normal) < 0)
-		// 	loc_source = _objects[actual_obj]->getTransparency() * loc_source;
 
 		float intensity = obj_normal.dotProduct(direction_to_light.normalize());
 		source = addSynthese(intensity * loc_source, source);
@@ -96,26 +88,24 @@ color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_
 		Vector obj_normal = _objects[index]->getNormalFromDirection(direction);
 
 		// //Transparency
-		if (traced < 1)
+		if (traced > 0)
 		{
-			transparency_source = trace(intersection, direction, index, traced + 1);
+			transparency_source = trace(intersection, direction, index, traced - 1);
 		}
 
 		// Reflexion
-		if (traced < 1)
+		if (traced > 0)
 		{
 			Vector u = -1 * direction;
 			Vector p = u.dotProduct(obj_normal) * obj_normal;
 			Vector new_direction = 2 * p - u;
 
-			reflexion_source = trace(intersection, new_direction, index, traced + 1);
+			reflexion_source = trace(intersection, new_direction, index, traced - 1);
 		}
 
 		// Light color
 		color_rgb lights_color = {0, 0, 0};
 		lights_color = getLightsContribution(intersection, obj_normal, index);
-		// std::cout << intersection << "\n";
-		// std::cout << lights_color << "\n";
 
 		// set the pixel color
 		local_source = (1 - reflexivity) * lights_color * _objects[index]->getColor() + reflexivity * reflexion_source;
@@ -140,29 +130,26 @@ void Scene::render()
 	{
 		for (unsigned row = 0; row < height; row++)
 		{
-			// std::cout << "Start\n";
-			// std::cout << "col : " << col << "\n";
-			// std::cout << "row : " << row << "\n";
 			// initialisation
 			color_rgb source = {0, 0, 0};
 			// Antialiasing
 			for (Offset offset : pixels_offset)
 			{
 				Vector direction = _screen.pixelDirection(row, col, offset.right, offset.bottom, screen_center);
-				color_rgb local_source = trace(camera_position, direction, -1, 1);
+				color_rgb local_source = trace(camera_position, direction, -1, _recursion_level);
 				source = addSynthese(offset.weight * local_source, source);
 			}
 
 			_screen.setPixelColor(row, col, source);
 		}
 
-		// //Progress status
-		// if (col % 200 == 0)
-		// {
-		// 	steps < col ? steps = col : steps = steps;
-		// 	std::cout << "Progress " << (float)steps / (float)width * 100 << " %";
-		// 	std::cout << "\n";
-		// }
+		//Progress status
+		if (col % 200 == 0)
+		{
+			steps < col ? steps = col : steps = steps;
+			std::cout << "Progress " << (float)steps / (float)width * 100 << " %";
+			std::cout << "\n";
+		}
 	}
 	_screen.save("first_image.ppm");
 }

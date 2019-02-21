@@ -1,7 +1,7 @@
 #include "objects/triangle.hpp"
 #include "utils/params.hpp"
 
-Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgb &col, float transparency, float reflexivity) : _A(A), _B(B), _C(C), Object(col, transparency, reflexivity) {}
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgb &col, float transparency, float reflexivity) : Object(col, transparency, reflexivity), _A(A), _B(B), _C(C) {}
 
 Vector Triangle::getNormal() const
 {

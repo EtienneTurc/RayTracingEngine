@@ -40,7 +40,7 @@ std::vector<Object *> loaderObj(std::string filename, const color_rgb &col, cons
 					const char *chh = sub_line.c_str();
 					sscanf(chh, " %d/", &index_value);
 					index_summits.push_back(index_value);
-					int i = 1;
+					unsigned i = 1;
 					if (sub_line[i] == ' ')
 					{
 						++i;

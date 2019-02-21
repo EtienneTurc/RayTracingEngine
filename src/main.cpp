@@ -2,7 +2,7 @@
 #include "utils/params.hpp"
 #include <chrono>
 
-int main(int argc, char const *argv[])
+int main()
 {
 
 	std::chrono::time_point<std::chrono::system_clock>

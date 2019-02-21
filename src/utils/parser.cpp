@@ -7,6 +7,10 @@
 #include "utils/parser.hpp"
 #include "utils/loader_obj.hpp"
 
+#include "objects/triangle.hpp"
+#include "lights/spot.hpp"
+#include "lights/sun.hpp"
+
 using namespace json11;
 using namespace std;
 
@@ -24,7 +28,7 @@ color_rgb stringToColor(string str)
 	stringstream ss(str);
 	float r, g, b;
 	ss >> r >> g >> b;
-	color_rgb color = {r, g, b};
+	color_rgb color = {(uint8_t)r, (uint8_t)g, (uint8_t)b};
 	return color;
 }
 
@@ -47,69 +51,57 @@ Scene jsonToScene(string path)
 
 	Json::array lights_json = scene_json["lights"].array_items();
 
-	std::vector<Light> lights;
-	for (int i = 0; i < lights_json.size(); i++)
+	std::vector<Light *> lights;
+	for (size_t i = 0; i < lights_json.size(); i++)
 	{
+		Vector position = stringToVector(lights_json[i]["position"].string_value());
+		color_rgb color = stringToColor(lights_json[i]["color"].string_value());
+
 		string type = lights_json[i]["type"].string_value();
+		Light *L;
 		if (type == "spot")
-		{
-			Vector position = stringToVector(lights_json[i]["position"].string_value());
-
-			color_rgb color = stringToColor(lights_json[i]["color"].string_value());
-
-			Light L(position, color);
-			lights.push_back(L);
-		}
+			L = new Spot(position, color);
+		else if (type == "sun")
+			L = new Sun(position, color);
+		else
+			continue;
+		lights.push_back(L);
 	}
 
 	Json::array objects_json = scene_json["objects"].array_items();
 
 	std::vector<Object *> obj;
-	// for (int i = 0; i < objects_json.size(); i++)
-	// {
-	// 	string type = objects_json[i]["type"].string_value();
-	// 	if (type == "triangle")
-	// 	{
-	// 		Json::array positions = objects_json[i]["positions"].array_items();
+	for (size_t i = 0; i < objects_json.size(); i++)
+	{
+		float transparency = objects_json[i]["transparency"].number_value();
+		float reflexitivity = objects_json[i]["reflexitivity"].number_value();
+		color_rgb color = stringToColor(objects_json[i]["color"].string_value());
 
-	// 		Vector tr(2, 0, 0);
+		// The rotation value is in degree in the json file
+		Vector translation = stringToVector(objects_json[i]["translation"].string_value());
+		Vector rotation = stringToVector(objects_json[i]["rotation"].string_value()) * (M_PI / 180);
 
-	// 		if (positions.size() != 3)
-	// 			continue;
-	// 		Vector A = stringToVector(positions[0].string_value()) + tr;
-	// 		Vector B = stringToVector(positions[1].string_value()) + tr;
-	// 		Vector C = stringToVector(positions[2].string_value()) + tr;
+		string type = objects_json[i]["type"].string_value();
+		if (type == "triangle")
+		{
+			Json::array positions = objects_json[i]["positions"].array_items();
 
-	// 		color_rgb color = stringToColor(objects_json[i]["color"].string_value());
+			if (positions.size() != 3)
+				continue;
+			Vector A = stringToVector(positions[0].string_value());
+			Vector B = stringToVector(positions[1].string_value());
+			Vector C = stringToVector(positions[2].string_value());
 
-	// 		float transparency = objects_json[i]["transparency"].number_value();
-	// 		float reflexitivity = objects_json[i]["reflexitivity"].number_value();
-
-	// 		Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
-	// 		obj.push_back(T);
-	// 	}
-	// }
-
-	// for (int i = 0; i < positions.size();)
-	// {
-	// 	Vector tr(3, 1, -1);
-
-	// 	Vector A(positions[i], positions[i + 1], positions[i + 2]);
-	// 	i += 3;
-	// 	Vector B(positions[i], positions[i + 1], positions[i + 2]);
-	// 	i += 3;
-	// 	Vector C(positions[i], positions[i + 1], positions[i + 2]);
-	// 	i += 3;
-	// 	color_rgb col = {150, 150, 150};
-	// 	Triangle *T = new Triangle(A + tr, B + tr, C + tr, col, 0, 0);
-	// 	obj.push_back(T);
-	// }
-
-	Vector tr(2, 0, -1.2);
-	Vector rot(0, 0, M_PI / 4);
-	// Vector rot(0, 0, 0);
-	Vector mag(1, 1, 1);
-	obj = loaderObj("./objects/cube.obj", {50, 50, 255}, tr, rot, mag);
+			Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
+			obj.push_back(T);
+		}
+		else if (type == "obj")
+		{
+			Vector mag(1, 1, 1); // Hardcoded for now
+			std::vector<Object *> obj_loaded = loaderObj("./objects/chair.obj", color, translation, rotation, mag);
+			obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
+		}
+	}
 
 	// Camera
 	Json camera_json = scene_json["camera"];
@@ -128,17 +120,18 @@ Scene jsonToScene(string path)
 	float field_of_vue = engine_json["field_of_vue"].number_value() * M_PI / 180;
 	float pixel_size = 2 * tan(field_of_vue * 90 / M_PI) / height;
 	Vector top_dir = stringToVector(engine_json["top_dir"].string_value());
+	unsigned recursion_level = engine_json["recursion_level"].int_value();
 
 	Json::array pixels_offset_json = engine_json["pixels_offset"].array_items();
 
 	std::vector<vec2> pixels_offset;
-	for (int i = 0; i < pixels_offset_json.size(); i++)
+	for (size_t i = 0; i < pixels_offset_json.size(); i++)
 	{
 		pixels_offset.push_back(stringToVec2(pixels_offset_json[i].string_value()));
 	}
 
 	Screen screen(height, width, pixel_size, top_dir, pixels_offset);
 
-	Scene scene(cam, screen, lights, obj);
+	Scene scene(cam, screen, lights, obj, recursion_level);
 	return scene;
 }

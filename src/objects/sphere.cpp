@@ -1,7 +1,7 @@
 #include "objects/sphere.hpp"
 #include "utils/params.hpp"
 
-Sphere::Sphere(const Vector &center, float radius, const color_rgb &col, float transparency, float reflexivity) : _center(center), _radius(radius), Object(col, transparency, reflexivity) {}
+Sphere::Sphere(const Vector &center, float radius, const color_rgb &col, float transparency, float reflexivity) : Object(col, transparency, reflexivity), _center(center), _radius(radius) {}
 
 bool Sphere::isIntersecting(const Vector point, const Vector direction, Vector &intersection) const
 {
@@ -35,7 +35,7 @@ bool Sphere::isIntersecting(const Vector point, const Vector direction, Vector &
 	return true;
 }
 
-Vector getNormalFromDirection(const Vector direction)
+Vector getNormalFromDirection(const Vector &)
 {
 	return Vector(0, 0, 0);
 }

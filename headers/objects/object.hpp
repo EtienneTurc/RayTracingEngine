@@ -6,14 +6,14 @@
 
 class Object
 {
-  private:
+  protected:
 	color_rgb _color;
 	float _transparency; //Between 0 and 1.
 	float _reflexivity;  //Between 0 and 1.
 
   public:
 	Object(const color_rgb &col, float transparency, float reflexivity);
-	~Object() {}
+	virtual ~Object() {}
 
 	color_rgb getColor() const;
 	float getTransparency() const;
