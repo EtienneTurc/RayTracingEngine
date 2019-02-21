@@ -13,7 +13,7 @@
 			"color": "100 100 100",
 			"transparency": 0,
 			"reflexitivity": 0,
-			"translation": "-1 0 -0.6",
+			"translation": "-1 -1 -0.6",
 			"rotation": "90 0 90"
 		},
 		{
@@ -57,14 +57,14 @@
 		}
 	],
 	"camera": {
-		"position": "0 1 0",
+		"position": "-2 0 0",
 		"direction": "1 0 0",
 		"dist_normal": 1
 	},
 	"engine": {
 		"screen_height": 500,
 		"screen_width": 500,
-		"field_of_vue": 40,
+		"field_of_vue": 90,
 		"top_dir": "0 0 1",
 		"pixels_offset": [
 			"0.5 0.5"

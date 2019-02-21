@@ -118,7 +118,7 @@ Scene jsonToScene(string path)
 	unsigned height = engine_json["screen_height"].int_value();
 	unsigned width = engine_json["screen_width"].int_value();
 	float field_of_vue = engine_json["field_of_vue"].number_value() * M_PI / 180;
-	float pixel_size = 2 * tan(field_of_vue * 90 / M_PI) / height;
+	float pixel_size = 2 * tan(field_of_vue / 2) / height;
 	Vector top_dir = stringToVector(engine_json["top_dir"].string_value());
 	unsigned recursion_level = engine_json["recursion_level"].int_value();
 
