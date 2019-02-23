@@ -12,7 +12,7 @@ class Sphere : public Object
 	float _radius;
 
   public:
-	Sphere(const Vector &center, float radius, const color_rgb &col, float transparency, float reflexivity);
+	Sphere(const Vector &center, float radius, const color_rgba &col, float transparency, float reflexivity);
 	~Sphere() {}
 
 	Vector getNormal(const Vector &, const Vector &) const;

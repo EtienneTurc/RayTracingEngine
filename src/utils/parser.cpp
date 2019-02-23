@@ -25,12 +25,12 @@ Vector stringToVector(string str)
 	return v;
 }
 
-color_rgb stringToColor(string str)
+color_rgba stringToColor(string str)
 {
 	stringstream ss(str);
 	float r, g, b;
 	ss >> r >> g >> b;
-	color_rgb color = {(float)r, (float)g, (float)b};
+	color_rgba color = {(float)r, (float)g, (float)b};
 	return color;
 }
 
@@ -57,7 +57,7 @@ Scene jsonToScene(string path)
 	for (size_t i = 0; i < lights_json.size(); i++)
 	{
 		Vector position = stringToVector(lights_json[i]["position"].string_value());
-		color_rgb color = stringToColor(lights_json[i]["color"].string_value());
+		color_rgba color = stringToColor(lights_json[i]["color"].string_value());
 
 		string type = lights_json[i]["type"].string_value();
 		Light *L;
@@ -77,7 +77,7 @@ Scene jsonToScene(string path)
 	{
 		float transparency = objects_json[i]["transparency"].number_value();
 		float reflexitivity = objects_json[i]["reflexitivity"].number_value();
-		color_rgb color = stringToColor(objects_json[i]["color"].string_value());
+		color_rgba color = stringToColor(objects_json[i]["color"].string_value());
 
 		// The rotation value is in degree in the json file
 		Vector translation = stringToVector(objects_json[i]["translation"].string_value());
@@ -94,8 +94,28 @@ Scene jsonToScene(string path)
 			Vector B = stringToVector(positions[1].string_value());
 			Vector C = stringToVector(positions[2].string_value());
 
-			Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
-			obj.push_back(T);
+			bool enabled_uv = objects_json[i]["enabled_uv"].bool_value();
+
+			if (enabled_uv)
+			{
+				Json::array uvs = objects_json[i]["uvs"].array_items();
+				if (positions.size() != 3)
+					continue;
+				vec2 A_uv = stringToVec2(uvs[0].string_value());
+				vec2 B_uv = stringToVec2(uvs[1].string_value());
+				vec2 C_uv = stringToVec2(uvs[2].string_value());
+
+				string texture_path = objects_json[i]["texture_path"].string_value();
+				texture *tex = new texture(texture_path);
+
+				Triangle *T = new Triangle(A, B, C, A_uv, B_uv, C_uv, tex, transparency, reflexitivity);
+				obj.push_back(T);
+			}
+			else
+			{
+				Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
+				obj.push_back(T);
+			}
 		}
 		else if (type == "sphere")
 		{

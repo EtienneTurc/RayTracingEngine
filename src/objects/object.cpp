@@ -1,9 +1,10 @@
 #include "objects/object.hpp"
 
-Object::Object(const color_rgb &col, float transparency, float reflexivity) : _color(col), _transparency(transparency), _reflexivity(reflexivity) {}
+Object::Object(const color_rgba &col, float transparency, float reflexivity) : _color(col), _transparency(transparency), _reflexivity(reflexivity) {}
 
-color_rgb Object::getColor() const
+color_rgba Object::getColor(const Vector &)
 {
+	_color[3] = 255;
 	return _color;
 }
 

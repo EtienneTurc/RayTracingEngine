@@ -4,12 +4,12 @@
 
 Screen::Screen(unsigned h, unsigned w, float s, const Vector &top_dir, const std::vector<vec2> &p) : _height(h), _width(w), _pixel_size(s)
 {
-	_data = std::vector<color_rgb>(h * w, {0, 0, 0});
+	_data = std::vector<color_rgba>(h * w, {0, 0, 0});
 	_top_dir = top_dir.normalize();
 	setWeight(p);
 }
 
-void Screen::setPixelColor(int row, int col, const color_rgb &color)
+void Screen::setPixelColor(int row, int col, const color_rgba &color)
 {
 	if (!(row >= _width || row < 0 || col >= _height || col < 0))
 		_data[_height * col + row] = color;
@@ -30,7 +30,7 @@ float Screen::getPixelSize() const
 	return _pixel_size;
 }
 
-color_rgb Screen::pixelAt(int row, int col) const
+color_rgba Screen::pixelAt(int row, int col) const
 {
 	if (row >= _width || row < 0 || col >= _height || col < 0)
 		return {0, 0, 0};

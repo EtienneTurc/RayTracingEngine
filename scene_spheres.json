@@ -1,50 +1,30 @@
 {
 	"lights": [
 		{
-			"type": "sun",
-			"position": "1 1 -1",
+			"type": "spot",
+			"position": "0 -2 2",
 			"color": "255 255 255"
 		}
 	],
 	"objects": [
 		{
-			"type": "triangle",
-			"positions": [
-				"2 -2 2",
-				"2 -2 -1",
-				"2 1 -1"
-			],
-			"enabled_uv": true,
-			"uvs": [
-				"0 1",
-				"0 0",
-				"1 0"
-			],
-			"texture_path": "test.png",
-			"color": "100 100 255",
+			"type": "sphere",
+			"radius": 1,
+			"center": "3 0 2.2",
+			"color": "0 0 255",
 			"transparency": 0,
-			"reflexitivity": 0,
-			"translation": "0 1 0",
+			"reflexitivity": 0.9,
+			"translation": "0 0 0",
 			"rotation": "0 0 0"
 		},
 		{
-			"type": "triangle",
-			"positions": [
-				"2 -2 2",
-				"2 1 2",
-				"2 1 -1"
-			],
-			"enabled_uv": true,
-			"uvs": [
-				"0 1",
-				"1 1",
-				"1 0"
-			],
-			"texture_path": "test.png",
-			"color": "100 100 255",
+			"type": "sphere",
+			"center": "3 0 0",
+			"radius": 1,
+			"color": "150 250 200",
 			"transparency": 0,
 			"reflexitivity": 0,
-			"translation": "0 1 0",
+			"translation": "0 0 0",
 			"rotation": "0 0 0"
 		},
 		{
@@ -72,8 +52,12 @@
 		"field_of_vue": 70,
 		"top_dir": "0 0 1",
 		"pixels_offset": [
-			"0.5 0.5"
+			"0.5 0.5",
+			"0.75 0.75",
+			"0.75 0.25",
+			"0.25 0.25",
+			"0.25 0.75"
 		],
-		"recursion_level": 1
+		"recursion_level": 3
 	}
 }

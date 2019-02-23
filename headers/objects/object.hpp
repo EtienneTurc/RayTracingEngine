@@ -7,15 +7,16 @@
 class Object
 {
   protected:
-	color_rgb _color;
+	color_rgba _color;
 	float _transparency; //Between 0 and 1.
 	float _reflexivity;  //Between 0 and 1.
 
   public:
-	Object(const color_rgb &col, float transparency, float reflexivity);
+	Object() {}
+	Object(const color_rgba &col, float transparency, float reflexivity);
 	virtual ~Object() {}
 
-	color_rgb getColor() const;
+	virtual color_rgba getColor(const Vector &point);
 	float getTransparency() const;
 	float getReflexivity() const;
 

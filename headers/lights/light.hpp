@@ -8,13 +8,13 @@ class Light
 {
   protected:
 	Vector _vec;
-	color_rgb _color;
+	color_rgba _color;
 
   public:
-	Light(const Vector &v, const color_rgb &c);
+	Light(const Vector &v, const color_rgba &c);
 	~Light() {}
 
-	color_rgb getColor() const;
+	color_rgba getColor() const;
 	virtual Vector getDirectionToLight(const Vector &point) const = 0;
 	virtual bool isIntersectionAfterLight(const Vector &A, const Vector &B) const = 0;
 };

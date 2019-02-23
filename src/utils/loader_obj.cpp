@@ -4,7 +4,7 @@
 #include "utils/loader_obj.hpp"
 #include "objects/triangle.hpp"
 
-std::vector<Object *> loaderObj(std::string filename, const color_rgb &col, const Vector &translation, const Vector &rotation, const Vector &mag)
+std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, const Vector &translation, const Vector &rotation, const Vector &mag)
 {
 	std::vector<Object *> objects;
 	std::ifstream file(filename);

@@ -1,6 +1,6 @@
 #include "lights/spot.hpp"
 
-Spot::Spot(const Vector &vec, const color_rgb &c) : Light(vec, c) {}
+Spot::Spot(const Vector &vec, const color_rgba &c) : Light(vec, c) {}
 
 Vector Spot::getDirectionToLight(const Vector &point) const
 {

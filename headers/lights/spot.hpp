@@ -8,7 +8,7 @@
 class Spot : public Light
 {
   public:
-	Spot(const Vector &vec, const color_rgb &c);
+	Spot(const Vector &vec, const color_rgba &c);
 
 	Vector getDirectionToLight(const Vector &point) const;
 	Vector getPosition() const;

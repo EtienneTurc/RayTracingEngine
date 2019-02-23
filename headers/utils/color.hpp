@@ -2,17 +2,17 @@
 #define _TYPE_HPP_
 #include <array>
 
-typedef std::array<float, 3> color_rgb;
+typedef std::array<float, 4> color_rgba;
 
-color_rgb subbSynthese(const color_rgb &obj, const color_rgb &li); // surfaces / lumière
-color_rgb addSynthese(const color_rgb &l1, const color_rgb &l2);   //pour ajouter des lumières
-color_rgb colorFloor(const color_rgb &col);
-color_rgb operator*(float lambda, const color_rgb &col);
-color_rgb operator*(const color_rgb &col, float lambda);
-color_rgb operator*(const color_rgb &col1, const color_rgb &col2);
-color_rgb operator+(const color_rgb &col1, const color_rgb &col2);
-color_rgb operator-(const color_rgb &col1, const color_rgb &col2);
+color_rgba subbSynthese(const color_rgba &obj, const color_rgba &li); // surfaces / lumière
+color_rgba addSynthese(const color_rgba &l1, const color_rgba &l2);   //pour ajouter des lumières
+color_rgba colorFloor(const color_rgba &col);
+color_rgba operator*(float lambda, const color_rgba &col);
+color_rgba operator*(const color_rgba &col, float lambda);
+color_rgba operator*(const color_rgba &col1, const color_rgba &col2);
+color_rgba operator+(const color_rgba &col1, const color_rgba &col2);
+color_rgba operator-(const color_rgba &col1, const color_rgba &col2);
 
-std::ostream &operator<<(std::ostream &stream, const color_rgb &col);
+std::ostream &operator<<(std::ostream &stream, const color_rgba &col);
 
 #endif

@@ -1,7 +1,7 @@
 #include "objects/sphere.hpp"
 #include "utils/params.hpp"
 
-Sphere::Sphere(const Vector &center, float radius, const color_rgb &col, float transparency, float reflexivity) : Object(col, transparency, reflexivity), _center(center), _radius(radius) {}
+Sphere::Sphere(const Vector &center, float radius, const color_rgba &col, float transparency, float reflexivity) : Object(col, transparency, reflexivity), _center(center), _radius(radius) {}
 
 Vector Sphere::getNormal(const Vector &point, const Vector &) const
 {

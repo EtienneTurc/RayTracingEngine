@@ -34,7 +34,7 @@ int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, 
 	return index;
 }
 
-color_rgb Scene::getLightContribution(const Vector &point, const Vector &direction, int light_index, int actual_obj, int deep) const
+color_rgba Scene::getLightContribution(const Vector &point, const Vector &direction, int light_index, int actual_obj, int deep) const
 {
 	if (deep == 0)
 		return {0, 0, 0};
@@ -47,14 +47,14 @@ color_rgb Scene::getLightContribution(const Vector &point, const Vector &directi
 	if (index == -1 || _lights[light_index]->isIntersectionAfterLight(point, intersection))
 		return _lights[light_index]->getColor();
 
-	return _objects[index]->getTransparency() * getLightContribution(intersection, direction, light_index, index, deep - 1) + (0.2 * _objects[actual_obj]->getColor());
+	return _objects[index]->getTransparency() * getLightContribution(intersection, direction, light_index, index, deep - 1) + (0.2 * _objects[actual_obj]->getColor(intersection));
 }
 
-color_rgb Scene::getLightsContribution(const Vector &point, const Vector &obj_normal, int actual_obj) const
+color_rgba Scene::getLightsContribution(const Vector &point, const Vector &obj_normal, int actual_obj) const
 {
 	Vector direction_to_light;
-	color_rgb source = {0, 0, 0};
-	color_rgb loc_source = {0, 0, 0};
+	color_rgba source = {0, 0, 0};
+	color_rgba loc_source = {0, 0, 0};
 	Vector intersection_pt = {0, 0, 0};
 	int deep = _recursion_level;
 
@@ -73,7 +73,7 @@ color_rgb Scene::getLightsContribution(const Vector &point, const Vector &obj_no
 	return source;
 }
 
-color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_obj, int traced) const
+color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual_obj, int traced) const
 {
 
 	Vector intersection(0, 0, 0);
@@ -84,18 +84,18 @@ color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_
 	//Check light that contributes to the intersection point
 	if (index > -1) // if intersect
 	{
-		color_rgb local_source = {0, 0, 0};
-		color_rgb transparency_source = {0, 0, 0};
-		color_rgb reflexion_source = {0, 0, 0};
+		color_rgba local_source = {0, 0, 0};
+		color_rgba transparency_source = {0, 0, 0};
+		color_rgba reflexion_source = {0, 0, 0};
 		float transparency = _objects[index]->getTransparency();
 		float reflexivity = _objects[index]->getReflexivity();
 		Vector obj_normal = _objects[index]->getNormal(intersection, direction);
 
 		// //Transparency
-		// if (traced > 0)
-		// {
-		// 	transparency_source = trace(intersection, direction, index, traced - 1);
-		// }
+		if (traced > 0)
+		{
+			transparency_source = trace(intersection, direction, index, traced - 1);
+		}
 
 		// Reflexion
 		if (traced > 0)
@@ -108,12 +108,16 @@ color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_
 		}
 
 		// Light color
-		color_rgb lights_color = {0, 0, 0};
+		color_rgba lights_color = {0, 0, 0};
 		lights_color = getLightsContribution(intersection, obj_normal, index);
 
+		color_rgba c = _objects[index]->getColor(intersection);
+
+		float opacity = (c[3] / 255) * (1 - transparency);
+
 		// set the pixel color
-		local_source = (1 - reflexivity) * lights_color * _objects[index]->getColor() + reflexivity * reflexion_source;
-		return (1 - transparency) * local_source + transparency * transparency_source;
+		local_source = (1 - reflexivity) * lights_color * c + reflexivity * reflexion_source;
+		return opacity * local_source + (1 - opacity) * transparency_source;
 	}
 	// if (traced == _recursion_level)
 	// 	return {0, 0, 0};
@@ -137,12 +141,12 @@ void Scene::render()
 		for (unsigned row = 0; row < height; row++)
 		{
 			// initialisation
-			color_rgb source = {0, 0, 0};
+			color_rgba source = {0, 0, 0};
 			// Antialiasing
 			for (Offset offset : pixels_offset)
 			{
 				Vector direction = _screen.pixelDirection(row, col, offset.right, offset.bottom, screen_center);
-				color_rgb local_source = trace(camera_position, direction, -1, _recursion_level);
+				color_rgba local_source = trace(camera_position, direction, -1, _recursion_level);
 				source = addSynthese(offset.weight * local_source, source);
 			}
 
@@ -160,20 +164,21 @@ void Scene::render()
 		}
 	}
 
-	for (unsigned col = 0; col < width; col++)
-	{
-		for (unsigned row = 0; row < height; row++)
-		{
-			color_rgb old_pixel = _screen.pixelAt(row, col);
-			color_rgb new_pixel = colorFloor(old_pixel);
-			color_rgb quant_error = old_pixel - new_pixel;
+	// Dithering
+	// for (unsigned col = 0; col < width; col++)
+	// {
+	// 	for (unsigned row = 0; row < height; row++)
+	// 	{
+	// 		color_rgba old_pixel = _screen.pixelAt(row, col);
+	// 		color_rgba new_pixel = colorFloor(old_pixel);
+	// 		color_rgba quant_error = old_pixel - new_pixel;
 
-			_screen.setPixelColor(row, col + 1, _screen.pixelAt(row, col + 1) + quant_error * (7 / 16));
-			_screen.setPixelColor(row + 1, col, _screen.pixelAt(row + 1, col) + quant_error * (5 / 16));
-			_screen.setPixelColor(row + 1, col - 1, _screen.pixelAt(row + 1, col - 1) + quant_error * (3 / 16));
-			_screen.setPixelColor(row + 1, col + 1, _screen.pixelAt(row + 1, col + 1) + quant_error * (1 / 16));
-		}
-	}
+	// 		_screen.setPixelColor(row, col + 1, _screen.pixelAt(row, col + 1) + quant_error * (7 / 16));
+	// 		_screen.setPixelColor(row + 1, col, _screen.pixelAt(row + 1, col) + quant_error * (5 / 16));
+	// 		_screen.setPixelColor(row + 1, col - 1, _screen.pixelAt(row + 1, col - 1) + quant_error * (3 / 16));
+	// 		_screen.setPixelColor(row + 1, col + 1, _screen.pixelAt(row + 1, col + 1) + quant_error * (1 / 16));
+	// 	}
+	// }
 
 	_screen.save("first_image.ppm");
 }

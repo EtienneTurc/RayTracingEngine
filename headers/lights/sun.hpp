@@ -8,7 +8,7 @@
 class Sun : public Light
 {
   public:
-	Sun(const Vector &vec, const color_rgb &c);
+	Sun(const Vector &vec, const color_rgba &c);
 
 	Vector getDirectionToLight(const Vector &) const;
 

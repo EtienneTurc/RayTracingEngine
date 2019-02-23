@@ -6,6 +6,7 @@
 
 #include "utils/vector.hpp"
 #include "utils/color.hpp"
+#include "utils/type.hpp"
 
 struct Offset
 {
@@ -14,15 +15,13 @@ struct Offset
 	float weight;
 };
 
-typedef std::array<float, 2> vec2;
-
 class Screen
 {
   private:
 	unsigned _height, _width;
 	float _pixel_size;
 	Vector _top_dir;
-	std::vector<color_rgb> _data;
+	std::vector<color_rgba> _data;
 	std::vector<Offset> _pixels_offset;
 
 	void setWeight(const std::vector<vec2> &p);
@@ -35,10 +34,10 @@ class Screen
 	unsigned getWidth() const;
 	float getPixelSize() const;
 	std::vector<Offset> getPixelsOffset() const;
-	color_rgb pixelAt(int row, int col) const;
+	color_rgba pixelAt(int row, int col) const;
 
 	Vector pixelDirection(unsigned row, unsigned col, float offset_right, float offset_bottom, const Vector &center) const;
-	void setPixelColor(int row, int col, const color_rgb &color);
+	void setPixelColor(int row, int col, const color_rgba &color);
 
 	void save(std::string output_name);
 };
