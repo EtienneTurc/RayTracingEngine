@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include "utils/params.hpp"
 
 Scene::Scene(Camera c, Screen s, std::vector<Light *> l, std::vector<Object *> t, unsigned recursion_level) : _camera(c), _screen(s), _lights(l), _objects(t), _recursion_level(recursion_level) {}
 
@@ -14,14 +15,15 @@ int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, 
 {
 	int index = -1;
 	Vector tmp_intersection(0, 0, 0);
-	float min_distance = -1;
+	double min_distance = -1;
 
 	for (size_t i = 0; i < _objects.size(); i++)
 	{
-		if (actual_obj != (int)i && _objects[i]->isIntersecting(point, direction, tmp_intersection))
+		// if (actual_obj != (int)i && _objects[i]->isIntersecting(point, direction, tmp_intersection))
+		if (_objects[i]->isIntersecting(point, direction, tmp_intersection))
 		{
-			float distance = (tmp_intersection - point).getNorm();
-			if (index == -1 || min_distance == -1 || min_distance > distance)
+			double distance = (tmp_intersection - point).getNorm();
+			if ((index == -1 || min_distance > distance) && distance > EPSILON)
 			{
 				intersection = tmp_intersection;
 				min_distance = distance;
@@ -63,6 +65,8 @@ color_rgb Scene::getLightsContribution(const Vector &point, const Vector &obj_no
 		loc_source = getLightContribution(point, direction_to_light, l, actual_obj, deep);
 
 		float intensity = obj_normal.dotProduct(direction_to_light.normalize());
+		if (intensity < 0)
+			intensity = 0;
 		source = addSynthese(intensity * loc_source, source);
 	}
 
@@ -85,13 +89,13 @@ color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_
 		color_rgb reflexion_source = {0, 0, 0};
 		float transparency = _objects[index]->getTransparency();
 		float reflexivity = _objects[index]->getReflexivity();
-		Vector obj_normal = _objects[index]->getNormalFromDirection(direction);
+		Vector obj_normal = _objects[index]->getNormal(intersection, direction);
 
 		// //Transparency
-		if (traced > 0)
-		{
-			transparency_source = trace(intersection, direction, index, traced - 1);
-		}
+		// if (traced > 0)
+		// {
+		// 	transparency_source = trace(intersection, direction, index, traced - 1);
+		// }
 
 		// Reflexion
 		if (traced > 0)
@@ -111,7 +115,9 @@ color_rgb Scene::trace(const Vector &point, const Vector &direction, int actual_
 		local_source = (1 - reflexivity) * lights_color * _objects[index]->getColor() + reflexivity * reflexion_source;
 		return (1 - transparency) * local_source + transparency * transparency_source;
 	}
-	return {0, 0, 0};
+	// if (traced == _recursion_level)
+	// 	return {0, 0, 0};
+	return {205, 197, 188};
 }
 
 void Scene::render()

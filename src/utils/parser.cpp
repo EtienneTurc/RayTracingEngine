@@ -8,6 +8,8 @@
 #include "utils/loader_obj.hpp"
 
 #include "objects/triangle.hpp"
+#include "objects/sphere.hpp"
+
 #include "lights/spot.hpp"
 #include "lights/sun.hpp"
 
@@ -95,12 +97,22 @@ Scene jsonToScene(string path)
 			Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
 			obj.push_back(T);
 		}
+		else if (type == "sphere")
+		{
+			Vector center = stringToVector(objects_json[i]["center"].string_value());
+			float radius = objects_json[i]["radius"].number_value();
+
+			Sphere *S = new Sphere(center, radius, color, transparency, reflexitivity);
+			obj.push_back(S);
+		}
 		else if (type == "obj")
 		{
 			Vector mag(1, 1, 1); // Hardcoded for now
 			std::vector<Object *> obj_loaded = loaderObj("./objects/chair.obj", color, translation, rotation, mag);
 			obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
 		}
+		else
+			continue;
 	}
 
 	// Camera

@@ -20,7 +20,7 @@ class Object
 	float getReflexivity() const;
 
 	virtual bool isIntersecting(const Vector &point, const Vector &direction, Vector &intersection) const = 0;
-	virtual Vector getNormalFromDirection(const Vector &direction) const = 0;
+	virtual Vector getNormal(const Vector &point, const Vector &direction) const = 0;
 };
 
 #endif //OBJECT_HPP

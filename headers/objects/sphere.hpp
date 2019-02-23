@@ -15,8 +15,8 @@ class Sphere : public Object
 	Sphere(const Vector &center, float radius, const color_rgb &col, float transparency, float reflexivity);
 	~Sphere() {}
 
-	bool isIntersecting(const Vector point, const Vector direction, Vector &intersection) const;
-	Vector getNormalFromDirection(const Vector direction);
+	Vector getNormal(const Vector &, const Vector &) const;
+	bool isIntersecting(const Vector &point, const Vector &direction, Vector &intersection) const;
 };
 
 #endif //SPHERE_HPP
