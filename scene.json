@@ -1,8 +1,8 @@
 {
 	"lights": [
 		{
-			"type": "sun",
-			"position": "1 1 -1",
+			"type": "spot",
+			"position": "0 -2 2",
 			"color": "255 255 255"
 		}
 	],

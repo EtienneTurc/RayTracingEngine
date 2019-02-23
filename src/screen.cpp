@@ -11,7 +11,8 @@ Screen::Screen(unsigned h, unsigned w, float s, const Vector &top_dir, const std
 
 void Screen::setPixelColor(int row, int col, const color_rgb &color)
 {
-	_data[_height * col + row] = color;
+	if (!(row >= _width || row < 0 || col >= _height || col < 0))
+		_data[_height * col + row] = color;
 }
 
 unsigned Screen::getHeight() const
@@ -27,6 +28,13 @@ unsigned Screen::getWidth() const
 float Screen::getPixelSize() const
 {
 	return _pixel_size;
+}
+
+color_rgb Screen::pixelAt(int row, int col) const
+{
+	if (row >= _width || row < 0 || col >= _height || col < 0)
+		return {0, 0, 0};
+	return _data[_height * col + row];
 }
 
 std::vector<Offset> Screen::getPixelsOffset() const
@@ -70,7 +78,7 @@ void Screen::save(std::string output_name)
 		<< _width << " " << _height << "\n255\n";
 	for (unsigned i = 0; i < _width * _height; ++i)
 	{
-		ofs << _data[i][0] << _data[i][1] << _data[i][2];
+		ofs << (uint8_t)_data[i][0] << (uint8_t)_data[i][1] << (uint8_t)_data[i][2];
 	}
 
 	ofs.close();

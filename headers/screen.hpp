@@ -35,6 +35,7 @@ class Screen
 	unsigned getWidth() const;
 	float getPixelSize() const;
 	std::vector<Offset> getPixelsOffset() const;
+	color_rgb pixelAt(int row, int col) const;
 
 	Vector pixelDirection(unsigned row, unsigned col, float offset_right, float offset_bottom, const Vector &center) const;
 	void setPixelColor(int row, int col, const color_rgb &color);

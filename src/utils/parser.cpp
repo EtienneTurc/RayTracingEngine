@@ -30,7 +30,7 @@ color_rgb stringToColor(string str)
 	stringstream ss(str);
 	float r, g, b;
 	ss >> r >> g >> b;
-	color_rgb color = {(uint8_t)r, (uint8_t)g, (uint8_t)b};
+	color_rgb color = {(float)r, (float)g, (float)b};
 	return color;
 }
 

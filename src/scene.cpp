@@ -146,6 +146,8 @@ void Scene::render()
 				source = addSynthese(offset.weight * local_source, source);
 			}
 
+			source = colorFloor(source);
+
 			_screen.setPixelColor(row, col, source);
 		}
 
@@ -157,5 +159,21 @@ void Scene::render()
 			std::cout << "\n";
 		}
 	}
+
+	for (unsigned col = 0; col < width; col++)
+	{
+		for (unsigned row = 0; row < height; row++)
+		{
+			color_rgb old_pixel = _screen.pixelAt(row, col);
+			color_rgb new_pixel = colorFloor(old_pixel);
+			color_rgb quant_error = old_pixel - new_pixel;
+
+			_screen.setPixelColor(row, col + 1, _screen.pixelAt(row, col + 1) + quant_error * (7 / 16));
+			_screen.setPixelColor(row + 1, col, _screen.pixelAt(row + 1, col) + quant_error * (5 / 16));
+			_screen.setPixelColor(row + 1, col - 1, _screen.pixelAt(row + 1, col - 1) + quant_error * (3 / 16));
+			_screen.setPixelColor(row + 1, col + 1, _screen.pixelAt(row + 1, col + 1) + quant_error * (1 / 16));
+		}
+	}
+
 	_screen.save("first_image.ppm");
 }
