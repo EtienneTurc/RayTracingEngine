@@ -1,7 +1,7 @@
 #include "scene.hpp"
 #include "utils/params.hpp"
 
-Scene::Scene(Camera c, Screen s, std::vector<Light *> l, std::vector<Object *> t, unsigned recursion_level) : _camera(c), _screen(s), _lights(l), _objects(t), _recursion_level(recursion_level) {}
+Scene::Scene(Camera c, Screen s, std::vector<Light *> l, std::vector<Object *> t, unsigned recursion_level, float env_diffusion) : _camera(c), _screen(s), _lights(l), _objects(t), _recursion_level(recursion_level), _env_diffusion(env_diffusion) {}
 
 Scene::~Scene()
 {
@@ -19,7 +19,6 @@ int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, 
 
 	for (size_t i = 0; i < _objects.size(); i++)
 	{
-		// if (actual_obj != (int)i && _objects[i]->isIntersecting(point, direction, tmp_intersection))
 		if (_objects[i]->isIntersecting(point, direction, tmp_intersection))
 		{
 			double distance = (tmp_intersection - point).getNorm();
@@ -47,7 +46,11 @@ color_rgba Scene::getLightContribution(const Vector &point, const Vector &direct
 	if (index == -1 || _lights[light_index]->isIntersectionAfterLight(point, intersection))
 		return _lights[light_index]->getColor();
 
-	return _objects[index]->getTransparency() * getLightContribution(intersection, direction, light_index, index, deep - 1) + (0.2 * _objects[actual_obj]->getColor(intersection));
+	color_rgba c_actual = _objects[actual_obj]->getColor(intersection);
+	color_rgba c_inter = _objects[index]->getColor(intersection);
+	float opacity = _objects[index]->getOpacity() * (c_inter[3] / 255);
+
+	return (1 - opacity) * getLightContribution(intersection, direction, light_index, index, deep - 1) + (_env_diffusion * c_actual);
 }
 
 color_rgba Scene::getLightsContribution(const Vector &point, const Vector &obj_normal, int actual_obj) const
@@ -87,8 +90,11 @@ color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual
 		color_rgba local_source = {0, 0, 0};
 		color_rgba transparency_source = {0, 0, 0};
 		color_rgba reflexion_source = {0, 0, 0};
-		float transparency = _objects[index]->getTransparency();
+		color_rgba c = _objects[index]->getColor(intersection);
+
+		float opacity = (c[3] / 255) * _objects[index]->getOpacity();
 		float reflexivity = _objects[index]->getReflexivity();
+
 		Vector obj_normal = _objects[index]->getNormal(intersection, direction);
 
 		// //Transparency
@@ -110,10 +116,6 @@ color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual
 		// Light color
 		color_rgba lights_color = {0, 0, 0};
 		lights_color = getLightsContribution(intersection, obj_normal, index);
-
-		color_rgba c = _objects[index]->getColor(intersection);
-
-		float opacity = (c[3] / 255) * (1 - transparency);
 
 		// set the pixel color
 		local_source = (1 - reflexivity) * lights_color * c + reflexivity * reflexion_source;

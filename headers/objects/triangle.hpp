@@ -22,8 +22,8 @@ class Triangle : public Object
 	Vector getObjectNormal() const;
 
   public:
-	Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgba &col, float transparency, float reflexivity);
-	Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, float transparency, float reflexivity);
+	Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgba &col, float opacity, float reflexivity);
+	Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, float opacity, float reflexivity);
 	~Triangle() {}
 
 	color_rgba getColor(const Vector &point);

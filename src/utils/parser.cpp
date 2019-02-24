@@ -75,7 +75,7 @@ Scene jsonToScene(string path)
 	std::vector<Object *> obj;
 	for (size_t i = 0; i < objects_json.size(); i++)
 	{
-		float transparency = objects_json[i]["transparency"].number_value();
+		float opacity = objects_json[i]["opacity"].number_value();
 		float reflexitivity = objects_json[i]["reflexitivity"].number_value();
 		color_rgba color = stringToColor(objects_json[i]["color"].string_value());
 
@@ -108,12 +108,12 @@ Scene jsonToScene(string path)
 				string texture_path = objects_json[i]["texture_path"].string_value();
 				texture *tex = new texture(texture_path);
 
-				Triangle *T = new Triangle(A, B, C, A_uv, B_uv, C_uv, tex, transparency, reflexitivity);
+				Triangle *T = new Triangle(A, B, C, A_uv, B_uv, C_uv, tex, opacity, reflexitivity);
 				obj.push_back(T);
 			}
 			else
 			{
-				Triangle *T = new Triangle(A, B, C, color, transparency, reflexitivity);
+				Triangle *T = new Triangle(A, B, C, color, opacity, reflexitivity);
 				obj.push_back(T);
 			}
 		}
@@ -122,7 +122,7 @@ Scene jsonToScene(string path)
 			Vector center = stringToVector(objects_json[i]["center"].string_value());
 			float radius = objects_json[i]["radius"].number_value();
 
-			Sphere *S = new Sphere(center, radius, color, transparency, reflexitivity);
+			Sphere *S = new Sphere(center, radius, color, opacity, reflexitivity);
 			obj.push_back(S);
 		}
 		else if (type == "obj")
@@ -153,6 +153,7 @@ Scene jsonToScene(string path)
 	float pixel_size = 2 * tan(field_of_vue / 2) / height;
 	Vector top_dir = stringToVector(engine_json["top_dir"].string_value());
 	unsigned recursion_level = engine_json["recursion_level"].int_value();
+	float env_diffusion = engine_json["env_diffusion"].number_value();
 
 	Json::array pixels_offset_json = engine_json["pixels_offset"].array_items();
 
@@ -164,6 +165,6 @@ Scene jsonToScene(string path)
 
 	Screen screen(height, width, pixel_size, top_dir, pixels_offset);
 
-	Scene scene(cam, screen, lights, obj, recursion_level);
+	Scene scene(cam, screen, lights, obj, recursion_level, env_diffusion);
 	return scene;
 }

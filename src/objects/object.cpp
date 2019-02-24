@@ -1,6 +1,6 @@
 #include "objects/object.hpp"
 
-Object::Object(const color_rgba &col, float transparency, float reflexivity) : _color(col), _transparency(transparency), _reflexivity(reflexivity) {}
+Object::Object(const color_rgba &col, float opacity, float reflexivity) : _color(col), _opacity(opacity), _reflexivity(reflexivity) {}
 
 color_rgba Object::getColor(const Vector &)
 {
@@ -8,9 +8,9 @@ color_rgba Object::getColor(const Vector &)
 	return _color;
 }
 
-float Object::getTransparency() const
+float Object::getOpacity() const
 {
-	return _transparency;
+	return _opacity;
 }
 
 float Object::getReflexivity() const

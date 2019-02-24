@@ -22,9 +22,9 @@
 			],
 			"texture_path": "test.png",
 			"color": "100 100 255",
-			"transparency": 0,
+			"opacity": 1,
 			"reflexitivity": 0,
-			"translation": "0 1 0",
+			"translation": "0 0 0",
 			"rotation": "0 0 0"
 		},
 		{
@@ -42,9 +42,9 @@
 			],
 			"texture_path": "test.png",
 			"color": "100 100 255",
-			"transparency": 0,
+			"opacity": 1,
 			"reflexitivity": 0,
-			"translation": "0 1 0",
+			"translation": "0 0 0",
 			"rotation": "0 0 0"
 		},
 		{
@@ -55,7 +55,7 @@
 				"-10000 0 -1.5"
 			],
 			"color": "232 225 214",
-			"transparency": 0,
+			"opacity": 1,
 			"reflexitivity": 0,
 			"translation": "0 0 0",
 			"rotation": "0 0 0"
@@ -74,6 +74,7 @@
 		"pixels_offset": [
 			"0.5 0.5"
 		],
-		"recursion_level": 1
+		"recursion_level": 3,
+		"env_diffusion": 0.2
 	}
 }

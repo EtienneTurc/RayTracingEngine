@@ -1,14 +1,14 @@
 #include "objects/triangle.hpp"
 #include "utils/params.hpp"
 
-Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgba &col, float transparency, float reflexivity) : Object(col, transparency, reflexivity), _A(A), _B(B), _C(C) {}
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgba &col, float opacity, float reflexivity) : Object(col, opacity, reflexivity), _A(A), _B(B), _C(C) {}
 
-Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, float transparency, float reflexivity)
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, float opacity, float reflexivity)
 {
 	_A = A;
 	_B = B;
 	_C = C;
-	_transparency = transparency;
+	_opacity = opacity;
 	_reflexivity = reflexivity;
 	_A_uv = A_uv;
 	_B_uv = B_uv;
