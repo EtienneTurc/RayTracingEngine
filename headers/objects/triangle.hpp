@@ -18,16 +18,22 @@ class Triangle : public Object
 	vec2 _B_uv;
 	vec2 _C_uv;
 	texture *_texture;
+	bool _enabled_smooth = false;
+	Vector _A_normal;
+	Vector _B_normal;
+	Vector _C_normal;
 
-	Vector getObjectNormal() const;
+	Vector getObjectNormal(const Vector &point) const;
 
   public:
 	Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgba &col, float opacity, float reflexivity);
 	Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, float opacity, float reflexivity);
+	Triangle(const Vector &A, const Vector &B, const Vector &C, const Vector &A_normal, const Vector &B_normal, const Vector &C_normal, float opacity, float reflexivity);
+	Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, const Vector &A_normal, const Vector &B_normal, const Vector &C_normal, float opacity, float reflexivity);
 	~Triangle() {}
 
 	color_rgba getColor(const Vector &point);
-	Vector getNormal(const Vector &, const Vector &direction) const;
+	Vector getNormal(const Vector &point, const Vector &direction) const;
 
 	bool isIntersecting(const Vector &point, const Vector &direction, Vector &intersection) const;
 };

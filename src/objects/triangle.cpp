@@ -17,16 +17,65 @@ Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2
 	_texture = t;
 }
 
-Vector Triangle::getObjectNormal() const
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const Vector &A_normal, const Vector &B_normal, const Vector &C_normal, float opacity, float reflexivity)
 {
-	Vector edge1 = _A - _B;
-	Vector edge2 = _A - _C;
-	return edge1.crossProduct(edge2);
+	_A = A;
+	_B = B;
+	_C = C;
+	_opacity = opacity;
+	_reflexivity = reflexivity;
+	_A_normal = A_normal;
+	_B_normal = B_normal;
+	_C_normal = C_normal;
+	_enabled_smooth = true;
 }
 
-Vector Triangle::getNormal(const Vector &, const Vector &direction) const
+Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, const Vector &A_normal, const Vector &B_normal, const Vector &C_normal, float opacity, float reflexivity)
 {
-	Vector obj_normal = this->getObjectNormal().normalize();
+	_A = A;
+	_B = B;
+	_C = C;
+	_opacity = opacity;
+	_reflexivity = reflexivity;
+	_A_normal = A_normal;
+	_B_normal = B_normal;
+	_C_normal = C_normal;
+	_A_uv = A_uv;
+	_B_uv = B_uv;
+	_C_uv = C_uv;
+	_enabled_smooth = true;
+	_enabled_uv = true;
+	_texture = t;
+}
+
+Vector Triangle::getObjectNormal(const Vector &point) const
+{
+	if (_enabled_smooth)
+	{
+		Vector u = _B - _C;
+		Vector v = _A - _C;
+		Vector a = (point - _C).crossProduct(u);
+		Vector b = (point - _C).crossProduct(v);
+		Vector tot = u.crossProduct(v);
+		double tot_area = tot.getNorm();
+
+		double alpha = a.getNorm() / tot_area;
+		double beta = b.getNorm() / tot_area;
+		double gamma = 1 - alpha - beta;
+
+		return alpha * _A_normal + beta * _B_normal + gamma * _C_normal;
+	}
+	else
+	{
+		Vector edge1 = _A - _B;
+		Vector edge2 = _A - _C;
+		return edge1.crossProduct(edge2);
+	}
+}
+
+Vector Triangle::getNormal(const Vector &point, const Vector &direction) const
+{
+	Vector obj_normal = this->getObjectNormal(point).normalize();
 	bool is_good_normal = obj_normal.dotProduct(direction) < 0;
 	if (!is_good_normal)
 	{
@@ -52,14 +101,7 @@ color_rgba Triangle::getColor(const Vector &point)
 	double beta = b.getNorm() / tot_area;
 	double gamma = 1 - alpha - beta;
 
-	// std::cout << "alpha " << alpha << "\n";
-	// std::cout << "beta " << beta << "\n";
-	// std::cout << "gamma " << gamma << "\n";
-
 	vec2 text = {alpha * _A_uv[0] + beta * _B_uv[0] + gamma * _C_uv[0], alpha * _A_uv[1] + beta * _B_uv[1] + gamma * _C_uv[1]};
-
-	// std::cout << "Intersection point " << point << "\n";
-	// std::cout << "Texture " << text[0] << " " << text[1] << "\n";
 
 	return _texture->sample(text[0], text[1]);
 }

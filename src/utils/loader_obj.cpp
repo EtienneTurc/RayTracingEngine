@@ -1,11 +1,16 @@
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 #include "utils/loader_obj.hpp"
 #include "objects/triangle.hpp"
 
-std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, const Vector &translation, const Vector &rotation, const Vector &mag)
+std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, const Vector &translation, const Vector &rotation, const Vector &mag, float opacity, float reflexivity, bool enabled_smooth, bool enabled_uv, std::string texture_path)
 {
+	texture *tex;
+	if (enabled_uv)
+		tex = new texture(texture_path);
+
 	std::vector<Object *> objects;
 	std::ifstream file(filename);
 	if (file.is_open())
@@ -13,7 +18,9 @@ std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, con
 		std::string line;
 		// std::vector<Triangle *> objects;
 		float X = 0, Y = 0, Z = 0;
-		std::vector<Vector> summits;
+		std::vector<Vector> vertices;
+		std::vector<vec2> uvs;
+		std::vector<Vector> normals;
 		while (getline(file, line))
 		{
 			std::string type = line.substr(0, 2);
@@ -24,49 +31,88 @@ std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, con
 				v >> x;
 				v >> y;
 				v >> z;
-				summits.push_back(Vector(x, y, z));
+				vertices.push_back(Vector(x, y, z));
 				X += x;
 				Y += y;
 				Z += z;
 			}
+			else if (type == "vt")
+			{
+				std::istringstream vt(line.substr(3));
+				float u, v;
+				vt >> u;
+				vt >> v;
+				uvs.push_back({u, v});
+			}
+			else if (type == "vn")
+			{
+				std::istringstream vn(line.substr(3));
+				float x, y, z;
+				vn >> x;
+				vn >> y;
+				vn >> z;
+				normals.push_back(Vector(x, y, z));
+			}
 			else if (type == "f ")
 			{
-				// std::cout << "f\n";
-				std::vector<unsigned> index_summits;
-				std::string sub_line = line.substr(1);
-				while (sub_line.length() > 1)
+				std::stringstream ss(line.substr(2));
+				std::vector<unsigned> index_vertices;
+				std::vector<unsigned> index_uvs;
+				std::vector<unsigned> index_normals;
+
+				while (ss)
 				{
-					unsigned index_value;
-					const char *chh = sub_line.c_str();
-					sscanf(chh, " %d/", &index_value);
-					index_summits.push_back(index_value);
-					unsigned i = 1;
-					if (sub_line[i] == ' ')
-					{
-						++i;
-					}
+					unsigned index_vertice;
+					unsigned index_uv;
+					unsigned index_normal;
+					char token;
+					ss >> index_vertice >> token >> index_uv >> token >> index_normal;
 
-					while (sub_line[i] != ' ' && i < sub_line.length() - 1)
-					{
-						++i;
-					}
-
-					sub_line = sub_line.substr(i);
+					index_vertices.push_back(index_vertice);
+					index_uvs.push_back(index_uv);
+					index_normals.push_back(index_normal);
 				}
 
-				Vector barycenter(X / summits.size(), Y / summits.size(), Z / summits.size());
+				Vector barycenter(X / vertices.size(), Y / vertices.size(), Z / vertices.size());
 
 				//create triangle
-				for (unsigned i = 1; i < index_summits.size() - 1; ++i)
+				for (unsigned i = 1; i < index_vertices.size() - 1; ++i)
 				{
-					Vector a = summits[index_summits[0] - 1];
+					Vector a = vertices[index_vertices[0] - 1];
 					a = (a - barycenter).rotate3D(rotation).magnify(mag) + translation + barycenter;
-					Vector b = summits[index_summits[i] - 1];
+					Vector b = vertices[index_vertices[i] - 1];
 					b = (b - barycenter).rotate3D(rotation).magnify(mag) + translation + barycenter;
-					Vector c = summits[index_summits[i + 1] - 1];
+					Vector c = vertices[index_vertices[i + 1] - 1];
 					c = (c - barycenter).rotate3D(rotation).magnify(mag) + translation + barycenter;
-					Triangle *t = new Triangle(a, b, c, col, 0, 0);
-					objects.push_back(t);
+
+					vec2 a_uv = uvs[index_uvs[0] - 1];
+					vec2 b_uv = uvs[index_uvs[i] - 1];
+					vec2 c_uv = uvs[index_uvs[i + 1] - 1];
+
+					Vector a_normal = normals[index_normals[0] - 1];
+					Vector b_normal = normals[index_normals[i] - 1];
+					Vector c_normal = normals[index_normals[i + 1] - 1];
+
+					if (enabled_uv && enabled_smooth)
+					{
+						Triangle *t = new Triangle(a, b, c, a_uv, b_uv, c_uv, tex, a_normal, b_normal, c_normal, opacity, reflexivity);
+						objects.push_back(t);
+					}
+					else if (enabled_uv)
+					{
+						Triangle *t = new Triangle(a, b, c, a_uv, b_uv, c_uv, tex, opacity, reflexivity);
+						objects.push_back(t);
+					}
+					else if (enabled_smooth)
+					{
+						Triangle *t = new Triangle(a, b, c, a_normal, b_normal, c_normal, opacity, reflexivity);
+						objects.push_back(t);
+					}
+					else
+					{
+						Triangle *t = new Triangle(a, b, c, col, opacity, reflexivity);
+						objects.push_back(t);
+					}
 				}
 			}
 		}

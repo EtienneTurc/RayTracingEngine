@@ -82,6 +82,8 @@ Scene jsonToScene(string path)
 		// The rotation value is in degree in the json file
 		Vector translation = stringToVector(objects_json[i]["translation"].string_value());
 		Vector rotation = stringToVector(objects_json[i]["rotation"].string_value()) * (M_PI / 180);
+		bool enabled_uv = objects_json[i]["enabled_uv"].bool_value();
+		bool enabled_smooth = objects_json[i]["enabled_smooth"].bool_value();
 
 		string type = objects_json[i]["type"].string_value();
 		if (type == "triangle")
@@ -90,11 +92,9 @@ Scene jsonToScene(string path)
 
 			if (positions.size() != 3)
 				continue;
-			Vector A = stringToVector(positions[0].string_value());
-			Vector B = stringToVector(positions[1].string_value());
-			Vector C = stringToVector(positions[2].string_value());
-
-			bool enabled_uv = objects_json[i]["enabled_uv"].bool_value();
+			Vector A = stringToVector(positions[0].string_value()) + translation;
+			Vector B = stringToVector(positions[1].string_value()) + translation;
+			Vector C = stringToVector(positions[2].string_value()) + translation;
 
 			if (enabled_uv)
 			{
@@ -128,8 +128,32 @@ Scene jsonToScene(string path)
 		else if (type == "obj")
 		{
 			Vector mag(1, 1, 1); // Hardcoded for now
-			std::vector<Object *> obj_loaded = loaderObj("./objects/chair.obj", color, translation, rotation, mag);
-			obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
+			string path = objects_json[i]["path"].string_value();
+
+			if (enabled_uv && enabled_smooth)
+			{
+				string texture_path = objects_json[i]["texture_path"].string_value();
+				std::vector<Object *> obj_loaded = loaderObj(path, color, translation, rotation, mag, opacity, reflexitivity, true, true, texture_path);
+				obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
+			}
+			else if (enabled_uv)
+			{
+				string texture_path = objects_json[i]["texture_path"].string_value();
+				std::cout << "hi\n";
+				std::vector<Object *> obj_loaded = loaderObj(path, color, translation, rotation, mag, opacity, reflexitivity, false, true, texture_path);
+				std::cout << "end\n";
+				obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
+			}
+			else if (enabled_smooth)
+			{
+				std::vector<Object *> obj_loaded = loaderObj(path, color, translation, rotation, mag, opacity, reflexitivity, true, false);
+				obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
+			}
+			else
+			{
+				std::vector<Object *> obj_loaded = loaderObj(path, color, translation, rotation, mag, opacity, reflexitivity, false, false);
+				obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
+			}
 		}
 		else
 			continue;

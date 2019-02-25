@@ -46,17 +46,16 @@ color_rgba Scene::getLightContribution(const Vector &point, const Vector &direct
 	if (index == -1 || _lights[light_index]->isIntersectionAfterLight(point, intersection))
 		return _lights[light_index]->getColor();
 
-	color_rgba c_actual = _objects[actual_obj]->getColor(intersection);
 	color_rgba c_inter = _objects[index]->getColor(intersection);
 	float opacity = _objects[index]->getOpacity() * (c_inter[3] / 255);
 
-	return (1 - opacity) * getLightContribution(intersection, direction, light_index, index, deep - 1) + (_env_diffusion * c_actual);
+	return (1 - opacity) * getLightContribution(intersection, direction, light_index, index, deep - 1);
 }
 
 color_rgba Scene::getLightsContribution(const Vector &point, const Vector &obj_normal, int actual_obj) const
 {
 	Vector direction_to_light;
-	color_rgba source = {0, 0, 0};
+	color_rgba source = _env_diffusion * _objects[actual_obj]->getColor(point);
 	color_rgba loc_source = {0, 0, 0};
 	Vector intersection_pt = {0, 0, 0};
 	int deep = _recursion_level;

@@ -27,5 +27,5 @@ color_rgba texture::sample(float u, float v) const
 {
 	unsigned col = floor(u * _width);
 	unsigned row = floor(v * _height);
-	return _data[_height * (_height - row) + col];
+	return _data[_height * (_height - 1 - row) + col];
 }
