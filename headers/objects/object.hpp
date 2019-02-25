@@ -4,6 +4,7 @@
 #include "utils/vector.hpp"
 #include "utils/color.hpp"
 
+// Pure abstract class
 class Object
 {
   protected:
@@ -20,6 +21,7 @@ class Object
 	float getOpacity() const;
 	float getReflexivity() const;
 
+	// Get the intersection of ray (defined by a point and a direction) and return the intersection by reference if there is any
 	virtual bool isIntersecting(const Vector &point, const Vector &direction, Vector &intersection) const = 0;
 	virtual Vector getNormal(const Vector &point, const Vector &direction) const = 0;
 };

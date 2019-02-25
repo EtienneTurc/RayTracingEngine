@@ -8,13 +8,7 @@
 #include "utils/color.hpp"
 #include "utils/type.hpp"
 
-struct Offset
-{
-	float right;
-	float bottom;
-	float weight;
-};
-
+// Simulate the screen (so the pixels)
 class Screen
 {
   private:

@@ -12,8 +12,8 @@
 			"radius": 1,
 			"center": "3 0 2.2",
 			"color": "0 0 255",
-			"opacity": 0,
-			"reflexitivity": 0.9,
+			"opacity": 1,
+			"reflexitivity": 1,
 			"translation": "0 0 0",
 			"rotation": "0 0 0"
 		},
@@ -22,7 +22,7 @@
 			"center": "3 0 0",
 			"radius": 1,
 			"color": "150 250 200",
-			"opacity": 0,
+			"opacity": 1,
 			"reflexitivity": 0,
 			"translation": "0 0 0",
 			"rotation": "0 0 0"
@@ -35,7 +35,7 @@
 				"-10000 0 -1.5"
 			],
 			"color": "232 225 214",
-			"opacity": 0,
+			"opacity": 1,
 			"reflexitivity": 0,
 			"translation": "0 0 0",
 			"rotation": "0 0 0"
@@ -58,6 +58,8 @@
 			"0.25 0.25",
 			"0.25 0.75"
 		],
-		"recursion_level": 3
+		"recursion_level": 3,
+		"env_diffusion": 0.5,
+		"output_name": "results/spheres"
 	}
 }

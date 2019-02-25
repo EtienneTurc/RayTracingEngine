@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 
+// Defining a class vector in order to easily use vectors
 class Vector
 {
   private:
@@ -27,6 +28,7 @@ class Vector
 
 	Vector crossProduct(const Vector &v) const;
 	float dotProduct(const Vector &v) const;
+
 	Vector normalize() const;
 	float getNorm() const;
 

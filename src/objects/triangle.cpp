@@ -3,53 +3,56 @@
 
 Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const color_rgba &col, float opacity, float reflexivity) : Object(col, opacity, reflexivity), _A(A), _B(B), _C(C) {}
 
+// Constructor of triangle with uv mapping
 Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, float opacity, float reflexivity)
 {
-	_A = A;
-	_B = B;
-	_C = C;
-	_opacity = opacity;
-	_reflexivity = reflexivity;
-	_A_uv = A_uv;
-	_B_uv = B_uv;
-	_C_uv = C_uv;
-	_enabled_uv = true;
-	_texture = t;
+	setBase(A, B, C, opacity, reflexivity);
+	setUv(A_uv, B_uv, C_uv, t);
 }
 
+// Constructor of triangle with smoothering
 Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const Vector &A_normal, const Vector &B_normal, const Vector &C_normal, float opacity, float reflexivity)
 {
-	_A = A;
-	_B = B;
-	_C = C;
-	_opacity = opacity;
-	_reflexivity = reflexivity;
-	_A_normal = A_normal;
-	_B_normal = B_normal;
-	_C_normal = C_normal;
-	_enabled_smooth = true;
+	setBase(A, B, C, opacity, reflexivity);
+	setSmooth(A_normal, B_normal, C_normal);
 }
 
 Triangle::Triangle(const Vector &A, const Vector &B, const Vector &C, const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t, const Vector &A_normal, const Vector &B_normal, const Vector &C_normal, float opacity, float reflexivity)
 {
+	setBase(A, B, C, opacity, reflexivity);
+	setSmooth(A_normal, B_normal, C_normal);
+	setUv(A_uv, B_uv, C_uv, t);
+}
+
+void Triangle::setBase(const Vector &A, const Vector &B, const Vector &C, float opacity, float reflexivity)
+{
 	_A = A;
 	_B = B;
 	_C = C;
 	_opacity = opacity;
 	_reflexivity = reflexivity;
-	_A_normal = A_normal;
-	_B_normal = B_normal;
-	_C_normal = C_normal;
+}
+
+void Triangle::setUv(const vec2 &A_uv, const vec2 &B_uv, const vec2 &C_uv, texture *t)
+{
 	_A_uv = A_uv;
 	_B_uv = B_uv;
 	_C_uv = C_uv;
-	_enabled_smooth = true;
 	_enabled_uv = true;
 	_texture = t;
 }
 
+void Triangle::setSmooth(const Vector &A_normal, const Vector &B_normal, const Vector &C_normal)
+{
+	_A_normal = A_normal;
+	_B_normal = B_normal;
+	_C_normal = C_normal;
+	_enabled_smooth = true;
+}
+
 Vector Triangle::getObjectNormal(const Vector &point) const
 {
+	// If the smoothering is enabled
 	if (_enabled_smooth)
 	{
 		Vector u = _B - _C;
@@ -59,6 +62,7 @@ Vector Triangle::getObjectNormal(const Vector &point) const
 		Vector tot = u.crossProduct(v);
 		double tot_area = tot.getNorm();
 
+		// Compute barycentic coefficents
 		double alpha = a.getNorm() / tot_area;
 		double beta = b.getNorm() / tot_area;
 		double gamma = 1 - alpha - beta;
@@ -86,10 +90,11 @@ Vector Triangle::getNormal(const Vector &point, const Vector &direction) const
 
 color_rgba Triangle::getColor(const Vector &point)
 {
+	// If uv mapping is not enabled
 	if (!_enabled_uv)
 		return Object::getColor(point);
 
-	// Barycentrique coordinate
+	// Barycentric coordinate
 	Vector u = _B - _C;
 	Vector v = _A - _C;
 	Vector a = (point - _C).crossProduct(u);
@@ -101,7 +106,7 @@ color_rgba Triangle::getColor(const Vector &point)
 	double beta = b.getNorm() / tot_area;
 	double gamma = 1 - alpha - beta;
 
-	vec2 text = {alpha * _A_uv[0] + beta * _B_uv[0] + gamma * _C_uv[0], alpha * _A_uv[1] + beta * _B_uv[1] + gamma * _C_uv[1]};
+	vec2 text = {(float)(alpha * _A_uv[0] + beta * _B_uv[0] + gamma * _C_uv[0]), (float)(alpha * _A_uv[1] + beta * _B_uv[1] + gamma * _C_uv[1])};
 
 	return _texture->sample(text[0], text[1]);
 }

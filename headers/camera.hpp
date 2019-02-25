@@ -3,12 +3,13 @@
 
 #include "utils/vector.hpp"
 
+// Simulate a camera
 class Camera
 {
   private:
 	Vector _position;
 	Vector _direction;
-	float _dist_normal;
+	float _dist_normal; // Minimal distance to the screen (usually 1)
 
   public:
 	Camera(const Vector &pos, const Vector &dir, float dist_n);

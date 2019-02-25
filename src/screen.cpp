@@ -11,7 +11,7 @@ Screen::Screen(unsigned h, unsigned w, float s, const Vector &top_dir, const std
 
 void Screen::setPixelColor(int row, int col, const color_rgba &color)
 {
-	if (!(row >= _width || row < 0 || col >= _height || col < 0))
+	if (!(row >= (int)_width || row < 0 || col >= (int)_height || col < 0))
 		_data[_height * col + row] = color;
 }
 
@@ -32,7 +32,7 @@ float Screen::getPixelSize() const
 
 color_rgba Screen::pixelAt(int row, int col) const
 {
-	if (row >= _width || row < 0 || col >= _height || col < 0)
+	if (row >= (int)_width || row < 0 || col >= (int)_height || col < 0)
 		return {0, 0, 0};
 	return _data[_height * col + row];
 }

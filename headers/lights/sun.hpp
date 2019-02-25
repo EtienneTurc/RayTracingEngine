@@ -5,6 +5,7 @@
 #include "utils/color.hpp"
 #include "utils/vector.hpp"
 
+// Simulate a sun, meaning that the beams are all parallel
 class Sun : public Light
 {
   public:

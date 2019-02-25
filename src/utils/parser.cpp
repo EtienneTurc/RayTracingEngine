@@ -51,6 +51,7 @@ Scene jsonToScene(string path)
 	string err;
 	Json scene_json = Json::parse(str, err);
 
+	// Parse Lights
 	Json::array lights_json = scene_json["lights"].array_items();
 
 	std::vector<Light *> lights;
@@ -70,6 +71,7 @@ Scene jsonToScene(string path)
 		lights.push_back(L);
 	}
 
+	// Parse Objects
 	Json::array objects_json = scene_json["objects"].array_items();
 
 	std::vector<Object *> obj;
@@ -139,9 +141,7 @@ Scene jsonToScene(string path)
 			else if (enabled_uv)
 			{
 				string texture_path = objects_json[i]["texture_path"].string_value();
-				std::cout << "hi\n";
 				std::vector<Object *> obj_loaded = loaderObj(path, color, translation, rotation, mag, opacity, reflexitivity, false, true, texture_path);
-				std::cout << "end\n";
 				obj.insert(obj.end(), obj_loaded.begin(), obj_loaded.end());
 			}
 			else if (enabled_smooth)
@@ -178,6 +178,10 @@ Scene jsonToScene(string path)
 	Vector top_dir = stringToVector(engine_json["top_dir"].string_value());
 	unsigned recursion_level = engine_json["recursion_level"].int_value();
 	float env_diffusion = engine_json["env_diffusion"].number_value();
+	string output_name = engine_json["output_name"].string_value();
+
+	if (output_name == "")
+		output_name = "scene";
 
 	Json::array pixels_offset_json = engine_json["pixels_offset"].array_items();
 
@@ -189,6 +193,6 @@ Scene jsonToScene(string path)
 
 	Screen screen(height, width, pixel_size, top_dir, pixels_offset);
 
-	Scene scene(cam, screen, lights, obj, recursion_level, env_diffusion);
+	Scene scene(cam, screen, lights, obj, recursion_level, env_diffusion, output_name);
 	return scene;
 }

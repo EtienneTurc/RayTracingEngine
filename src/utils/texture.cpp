@@ -17,7 +17,7 @@ texture::texture(std::string filepath)
 	_data.resize(_width * _height);
 	for (size_t i = 0; i < image.size();)
 	{
-		color_rgba c = {image[i], image[i + 1], image[i + 2], image[i + 3]};
+		color_rgba c = {(float)image[i], (float)image[i + 1], (float)image[i + 2], (float)image[i + 3]};
 		_data[i / 4] = c;
 		i += 4;
 	}

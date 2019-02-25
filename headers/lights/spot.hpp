@@ -5,6 +5,7 @@
 #include "utils/color.hpp"
 #include "utils/vector.hpp"
 
+// A light that is represented by a infinitisemal point
 class Spot : public Light
 {
   public:

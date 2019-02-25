@@ -1,12 +1,17 @@
 #ifndef _TYPE_HPP_
 #define _TYPE_HPP_
+
 #include <array>
 
-typedef std::array<float, 4> color_rgba;
+#include "utils/type.hpp"
 
-color_rgba subbSynthese(const color_rgba &obj, const color_rgba &li); // surfaces / lumière
-color_rgba addSynthese(const color_rgba &l1, const color_rgba &l2);   //pour ajouter des lumières
+// Substractive synthese
+color_rgba subbSynthese(const color_rgba &obj, const color_rgba &li);
+// Additive synthese
+color_rgba addSynthese(const color_rgba &l1, const color_rgba &l2);
+
 color_rgba colorFloor(const color_rgba &col);
+
 color_rgba operator*(float lambda, const color_rgba &col);
 color_rgba operator*(const color_rgba &col, float lambda);
 color_rgba operator*(const color_rgba &col1, const color_rgba &col2);

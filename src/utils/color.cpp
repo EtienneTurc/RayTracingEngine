@@ -20,14 +20,13 @@ color_rgba addSynthese(const color_rgba &l1, const color_rgba &l2)
 
 color_rgba colorFloor(const color_rgba &col)
 {
-	return {floor(col[0]), floor(col[1]), floor(col[2])};
+	return {(float)floor(col[0]), (float)floor(col[1]), (float)floor(col[2])};
 }
 
 color_rgba operator*(float lambda, const color_rgba &col)
 {
 	if (lambda > 1 || lambda < 0)
 	{
-		// TODO: exception
 		return col;
 	}
 	return {(float)(col[0] * lambda), (float)(col[1] * lambda), (float)(col[2] * lambda)};

@@ -4,6 +4,7 @@
 #include "utils/vector.hpp"
 #include "utils/color.hpp"
 
+// Pure abstract class
 class Light
 {
   protected:
@@ -16,6 +17,7 @@ class Light
 
 	color_rgba getColor() const;
 	virtual Vector getDirectionToLight(const Vector &point) const = 0;
+
 	virtual bool isIntersectionAfterLight(const Vector &A, const Vector &B) const = 0;
 };
 

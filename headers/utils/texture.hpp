@@ -6,10 +6,11 @@
 
 #include "utils/color.hpp"
 
+// Class where the texture is loaded and sampled
+// Only used with the uv mapping of a triangle or a set of triangles
 class texture
 {
   private:
-	/* data */
 	unsigned _height;
 	unsigned _width;
 	std::vector<color_rgba> _data;

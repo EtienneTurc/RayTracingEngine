@@ -5,6 +5,7 @@
 #include "utils/color.hpp"
 #include "object.hpp"
 
+// Sphere Object
 class Sphere : public Object
 {
   private:

@@ -7,7 +7,7 @@
 
 std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, const Vector &translation, const Vector &rotation, const Vector &mag, float opacity, float reflexivity, bool enabled_smooth, bool enabled_uv, std::string texture_path)
 {
-	texture *tex;
+	texture *tex = 0;
 	if (enabled_uv)
 		tex = new texture(texture_path);
 

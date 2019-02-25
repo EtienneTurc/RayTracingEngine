@@ -1,7 +1,7 @@
 #include "scene.hpp"
 #include "utils/params.hpp"
 
-Scene::Scene(Camera c, Screen s, std::vector<Light *> l, std::vector<Object *> t, unsigned recursion_level, float env_diffusion) : _camera(c), _screen(s), _lights(l), _objects(t), _recursion_level(recursion_level), _env_diffusion(env_diffusion) {}
+Scene::Scene(Camera c, Screen s, std::vector<Light *> l, std::vector<Object *> t, unsigned recursion_level, float env_diffusion, std::string output_name) : _camera(c), _screen(s), _lights(l), _objects(t), _recursion_level(recursion_level), _env_diffusion(env_diffusion), _output_name(output_name) {}
 
 Scene::~Scene()
 {
@@ -11,7 +11,7 @@ Scene::~Scene()
 	}
 }
 
-int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, int actual_obj, Vector &intersection) const
+int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, Vector &intersection) const
 {
 	int index = -1;
 	Vector tmp_intersection(0, 0, 0);
@@ -33,14 +33,14 @@ int Scene::getObjectsIntersection(const Vector &direction, const Vector &point, 
 	return index;
 }
 
-color_rgba Scene::getLightContribution(const Vector &point, const Vector &direction, int light_index, int actual_obj, int deep) const
+color_rgba Scene::getLightContribution(const Vector &point, const Vector &direction, int light_index, int deep) const
 {
 	if (deep == 0)
 		return {0, 0, 0};
 
 	Vector intersection(0, 0, 0);
 
-	int index = getObjectsIntersection(direction, point, actual_obj, intersection);
+	int index = getObjectsIntersection(direction, point, intersection);
 
 	// If intersection is not found or is after the light
 	if (index == -1 || _lights[light_index]->isIntersectionAfterLight(point, intersection))
@@ -49,7 +49,7 @@ color_rgba Scene::getLightContribution(const Vector &point, const Vector &direct
 	color_rgba c_inter = _objects[index]->getColor(intersection);
 	float opacity = _objects[index]->getOpacity() * (c_inter[3] / 255);
 
-	return (1 - opacity) * getLightContribution(intersection, direction, light_index, index, deep - 1);
+	return (1 - opacity) * getLightContribution(intersection, direction, light_index, deep - 1);
 }
 
 color_rgba Scene::getLightsContribution(const Vector &point, const Vector &obj_normal, int actual_obj) const
@@ -64,7 +64,7 @@ color_rgba Scene::getLightsContribution(const Vector &point, const Vector &obj_n
 	{
 		direction_to_light = _lights[l]->getDirectionToLight(point);
 
-		loc_source = getLightContribution(point, direction_to_light, l, actual_obj, deep);
+		loc_source = getLightContribution(point, direction_to_light, l, deep);
 
 		float intensity = obj_normal.dotProduct(direction_to_light.normalize());
 		if (intensity < 0)
@@ -75,13 +75,13 @@ color_rgba Scene::getLightsContribution(const Vector &point, const Vector &obj_n
 	return source;
 }
 
-color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual_obj, int traced) const
+color_rgba Scene::trace(const Vector &point, const Vector &direction, int traced) const
 {
 
 	Vector intersection(0, 0, 0);
 
 	// find if there is an intersection
-	int index = getObjectsIntersection(direction, point, actual_obj, intersection);
+	int index = getObjectsIntersection(direction, point, intersection);
 
 	//Check light that contributes to the intersection point
 	if (index > -1) // if intersect
@@ -99,7 +99,7 @@ color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual
 		// //Transparency
 		if (traced > 0)
 		{
-			transparency_source = trace(intersection, direction, index, traced - 1);
+			transparency_source = trace(intersection, direction, traced - 1);
 		}
 
 		// Reflexion
@@ -109,7 +109,7 @@ color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual
 			Vector p = u.dotProduct(obj_normal) * obj_normal;
 			Vector new_direction = 2 * p - u;
 
-			reflexion_source = trace(intersection, new_direction, index, traced - 1);
+			reflexion_source = trace(intersection, new_direction, traced - 1);
 		}
 
 		// Light color
@@ -120,8 +120,6 @@ color_rgba Scene::trace(const Vector &point, const Vector &direction, int actual
 		local_source = (1 - reflexivity) * lights_color * c + reflexivity * reflexion_source;
 		return opacity * local_source + (1 - opacity) * transparency_source;
 	}
-	// if (traced == _recursion_level)
-	// 	return {0, 0, 0};
 	return {205, 197, 188};
 }
 
@@ -147,7 +145,7 @@ void Scene::render()
 			for (Offset offset : pixels_offset)
 			{
 				Vector direction = _screen.pixelDirection(row, col, offset.right, offset.bottom, screen_center);
-				color_rgba local_source = trace(camera_position, direction, -1, _recursion_level);
+				color_rgba local_source = trace(camera_position, direction, _recursion_level);
 				source = addSynthese(offset.weight * local_source, source);
 			}
 
@@ -181,5 +179,5 @@ void Scene::render()
 	// 	}
 	// }
 
-	_screen.save("first_image.ppm");
+	_screen.save(_output_name + ".ppm");
 }
