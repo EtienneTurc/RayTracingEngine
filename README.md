@@ -14,7 +14,11 @@ Then to execute the program, you can execute the following command:
 
 This command will select by the default the scene described in the scene.json file.If you want to render another scene simply execute:
 
-	./main <path_to_my_file.json>
+	./main -s=<path_to_my_file.json>
+
+You can also use `--scene` instead of `-s`
+
+You can also specifify the number of threads you want to use. Just add the argument `-t=<num_threads>` or `--threads=<num_threads>`. By default, the program uses all the threads.
 
 # Defining a scene
 
