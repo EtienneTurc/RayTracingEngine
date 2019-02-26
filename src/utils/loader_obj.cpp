@@ -85,13 +85,25 @@ std::vector<Object *> loaderObj(std::string filename, const color_rgba &col, con
 					Vector c = vertices[index_vertices[i + 1] - 1];
 					c = (c - barycenter).rotate3D(rotation).magnify(mag) + translation + barycenter;
 
-					vec2 a_uv = uvs[index_uvs[0] - 1];
-					vec2 b_uv = uvs[index_uvs[i] - 1];
-					vec2 c_uv = uvs[index_uvs[i + 1] - 1];
+					vec2 a_uv;
+					vec2 b_uv;
+					vec2 c_uv;
+					if (enabled_uv)
+					{
+						a_uv = uvs[index_uvs[0] - 1];
+						b_uv = uvs[index_uvs[i] - 1];
+						c_uv = uvs[index_uvs[i + 1] - 1];
+					}
 
-					Vector a_normal = normals[index_normals[0] - 1];
-					Vector b_normal = normals[index_normals[i] - 1];
-					Vector c_normal = normals[index_normals[i + 1] - 1];
+					Vector a_normal;
+					Vector b_normal;
+					Vector c_normal;
+					if (enabled_smooth)
+					{
+						a_normal = normals[index_normals[0] - 1];
+						b_normal = normals[index_normals[i] - 1];
+						c_normal = normals[index_normals[i + 1] - 1];
+					}
 
 					if (enabled_uv && enabled_smooth)
 					{
